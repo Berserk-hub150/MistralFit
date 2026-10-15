@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mistralfit"
+version = "0.1.0"
+description = "Measure and compare local Mistral memory-placement strategies with llama.cpp."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Luca Magrini"}]
+dependencies = []
+keywords = ["mistral", "llama.cpp", "gguf", "autotuning", "local-llm", "benchmark"]
+
+[project.urls]
+Homepage = "https://github.com/Berserk-hub150/MistralFit"
+Repository = "https://github.com/Berserk-hub150/MistralFit"
+Documentation = "https://github.com/Berserk-hub150/MistralFit#readme"
+Issues = "https://github.com/Berserk-hub150/MistralFit/issues"
+
+[project.scripts]
+mistralfit = "mistralfit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mistralfit*"]

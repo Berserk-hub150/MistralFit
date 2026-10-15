@@ -1,0 +1,1 @@
+Implement a Python function merge_sorted_streams that lazily merges any number of sorted iterators using a heap. Explain its time and memory complexity. Include examples covering zero inputs, empty iterators, duplicate values, and three interleaved streams. Discuss how the function behaves with an infinite sorted input stream.

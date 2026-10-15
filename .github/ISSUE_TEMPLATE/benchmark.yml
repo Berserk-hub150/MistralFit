@@ -1,0 +1,29 @@
+name: Real model experiment
+description: Share a reproducible Mistral experiment, including failed or slower outcomes.
+title: '[experiment] '
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Model source, quantization and full checksums
+    validations:
+      required: true
+  - type: textarea
+    id: hardware
+    attributes:
+      label: OS, CPU, GPU, available RAM/VRAM, driver and power policy
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Runtime build, command, workload, context, tokens, repeats and warmups
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Raw JSON, baseline, exclusions and separate quality checks
+      description: Attach the report after reviewing private model or machine details. Protocol fixture timings are not inference results.
+    validations:
+      required: true

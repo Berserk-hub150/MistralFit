@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="MistralFit abstract memory tiles">
+<rect width="96" height="96" rx="24" fill="#141b23"/>
+<g fill="#f5b64c"><rect x="20" y="22" width="14" height="14" rx="3"/><rect x="41" y="22" width="14" height="14" rx="3"/><rect x="62" y="22" width="14" height="14" rx="3"/><rect x="20" y="43" width="14" height="14" rx="3"/><rect x="41" y="43" width="14" height="14" rx="3"/><rect x="20" y="64" width="14" height="14" rx="3"/></g>
+<path d="M44 69l10 9 22-28" fill="none" stroke="#e5edf5" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

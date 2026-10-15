@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-labelledby="title desc">
+<title id="title">MistralFit</title><desc id="desc">Measured local Mistral configuration search. Inspect GGUF, compare memory placement and launch the measured winner using llama.cpp.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0e1721"/><stop offset="1" stop-color="#202d3b"/></linearGradient><linearGradient id="tile" y2="1"><stop stop-color="#ffc76c"/><stop offset="1" stop-color="#e99d3c"/></linearGradient></defs>
+<rect width="1280" height="440" rx="20" fill="url(#bg)"/>
+<g fill="none" stroke="#607284" stroke-opacity=".13"><path d="M0 380H1280M0 340H1280M0 300H1280M0 260H1280M0 220H1280M0 180H1280M0 140H1280M0 100H1280M0 60H1280"/><path d="M80 0V440M160 0V440M240 0V440M320 0V440M400 0V440M480 0V440M560 0V440M640 0V440M720 0V440M800 0V440M880 0V440M960 0V440M1040 0V440M1120 0V440M1200 0V440"/></g>
+<g font-family="DejaVu Sans,Arial,sans-serif"><text x="64" y="74" fill="#ffc76c" font-size="13" letter-spacing="3">LOCAL INFERENCE · MEASURED CONFIGURATION SEARCH</text>
+<text x="60" y="173" fill="#f1f5f8" font-size="76" font-weight="bold" letter-spacing="-3">MistralFit</text>
+<text x="64" y="222" fill="#c0cfdd" font-size="24">Find a measured setup for your Mistral model.</text>
+<text x="64" y="266" fill="#8fa4b8" font-size="18">Inspect the GGUF. Compare placements. Keep the evidence.</text>
+<rect x="64" y="319" width="114" height="34" rx="17" fill="#34404b"/><text x="121" y="341" text-anchor="middle" fill="#e8eef4" font-size="13">SMALL 4</text>
+<rect x="190" y="319" width="114" height="34" rx="17" fill="#34404b"/><text x="247" y="341" text-anchor="middle" fill="#e8eef4" font-size="13">GGUF</text>
+<rect x="316" y="319" width="114" height="34" rx="17" fill="#34404b"/><text x="373" y="341" text-anchor="middle" fill="#e8eef4" font-size="13">LLAMA.CPP</text>
+<g transform="translate(865 91)"><rect width="316" height="258" rx="20" fill="#15212d" stroke="#4e6579"/>
+<text x="24" y="38" fill="#8fa4b8" font-size="13" letter-spacing="2">COMPARE MEMORY PLACEMENTS</text>
+<g fill="url(#tile)"><rect x="26" y="66" width="50" height="44" rx="7"/><rect x="87" y="66" width="50" height="44" rx="7"/><rect x="148" y="66" width="50" height="44" rx="7"/><rect x="209" y="66" width="50" height="44" rx="7"/>
+<rect x="26" y="124" width="50" height="44" rx="7"/><rect x="87" y="124" width="50" height="44" rx="7"/></g>
+<g fill="#65877f"><rect x="148" y="124" width="50" height="44" rx="7"/><rect x="209" y="124" width="50" height="44" rx="7"/></g>
+<path d="M26 194H290" stroke="#3a5062"/>
+<circle cx="34" cy="223" r="5" fill="#ffc76c"/><text x="48" y="228" fill="#c0cfdd" font-size="14">GPU</text><circle cx="132" cy="223" r="5" fill="#65877f"/><text x="146" y="228" fill="#c0cfdd" font-size="14">CPU / RAM</text>
+</g><text x="64" y="403" fill="#71869b" font-size="12">Independent community project · Experimental v0.1 · No published speedup claims</text>
+</g></svg>
