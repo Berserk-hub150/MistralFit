@@ -4,6 +4,7 @@
 
 - Add an explicit `--no-repack` experiment control, validate backend support, record it and preserve it when launching the measured winner.
 - Prepare constrained-memory real-model validation without changing quantization between candidates.
+- Estimate reclaimable clean inactive file cache in Linux cgroup memory budgets instead of counting the entire downloaded-model cache as unavailable RAM.
 
 ## 0.1.0 — 2026-10-15
 

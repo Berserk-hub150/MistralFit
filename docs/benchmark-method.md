@@ -42,6 +42,8 @@ Weight storage is measured from GGUF tensor offsets. Those spans include padding
 
 Available RAM and free GPU memory are sampled before the experiment, not monitored throughout it. Apple Silicon CPU/GPU allocations share one pool and are not added together. Peak RSS, peak VRAM, actual offloaded tensor allocation, disk bandwidth and expert-cache hit rates are not measured in this release.
 
+Linux cgroup budgets include an estimate of clean inactive file cache that the kernel can reclaim; dirty/writeback pages are deducted conservatively. This prevents a recently downloaded model's cache from being treated as entirely unreclaimable usage. It is a planning estimate, not a memory-allocation guarantee. Counter definitions are documented by the [Linux kernel](https://docs.kernel.org/admin-guide/cgroup-v2.html#memory).
+
 ## Publication checklist
 
 Include model source and quantization, full shard checksums, runtime build/commit, OS/backend/driver, CPU/GPU/RAM, power policy, fixed context, prompt source/hash, tokens, repeats, warmups, complete raw JSON, exclusions and a separate quality check. Review the report for private model names or machine details. Do not publish the protocol fixture's timings as model results. Do not compare results using different models or shorter contexts as if they were the same experiment.

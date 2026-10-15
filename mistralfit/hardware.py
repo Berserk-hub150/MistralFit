@@ -39,6 +39,14 @@ def _run(args: list[str]) -> str:
     return subprocess.check_output(args, text=True, stderr=subprocess.DEVNULL, timeout=8).strip()
 
 
+def cgroup_available(limit: int, current: int, stats: dict[str, int]) -> int:
+    """Conservative headroom estimate including clean inactive file cache."""
+    inactive = max(0, stats.get("inactive_file", 0))
+    dirty = max(0, stats.get("file_dirty", 0)) + max(0, stats.get("file_writeback", 0))
+    reclaimable = min(max(0, current), max(0, inactive - dirty))
+    return max(0, min(limit, limit - current + reclaimable))
+
+
 def detect() -> Hardware:
     system, machine = platform.system(), platform.machine()
     notes, total, available = [], 0, 0
@@ -55,8 +63,15 @@ def detect() -> Hardware:
                 cap = int(limit.read_text())
                 if 0 < cap < total:
                     total = cap
-                    available = min(available, max(0, cap - int(usage.read_text())))
-                    notes.append("RAM constrained by the container cgroup.")
+                    stats = {}
+                    try:
+                        for row in Path("/sys/fs/cgroup/memory.stat").read_text().splitlines():
+                            key, value = row.split()
+                            stats[key] = int(value)
+                    except (OSError, ValueError):
+                        pass
+                    available = min(available, cgroup_available(cap, int(usage.read_text()), stats))
+                    notes.append("RAM constrained by the container cgroup; available budget includes estimated clean inactive file cache.")
         elif system == "Windows":
             class MemoryStatus(ctypes.Structure):
                 _fields_ = [("length", ctypes.c_ulong), ("load", ctypes.c_ulong),
