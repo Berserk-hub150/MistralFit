@@ -13,7 +13,7 @@
 
 It uses **llama.cpp** for inference and targets **Mistral Small 4**. The search includes upstream automatic fitting, GPU layer offload, CPU-resident experts, mixed expert placement and optional expert caching. Every trial keeps the same context and generation budget.
 
-> **Experimental v0.1.1.** Real Small 4 IQ1_S generation has been measured on one constrained CPU setup: [raw data and reproduction commands](benchmarks/2026-10-15-small4-iq1s-cpu/README.md). GPU/expert-offload performance and output quality remain unvalidated. No acceleration is established. Independent community project; unaffiliated with Mistral AI.
+> **Experimental v0.2.0.** Real Small 4 IQ1_S generation has been measured on one constrained CPU setup: [raw data and reproduction commands](benchmarks/2026-10-15-small4-iq1s-cpu/README.md). The new [controlled GPU study protocol](docs/controlled-study.md) is implemented; its real GPU run is pending. GPU/expert-offload performance and output quality remain unvalidated. No acceleration is established. Independent community project; unaffiliated with Mistral AI.
 
 ## What you get
 
@@ -107,7 +107,19 @@ python -m mistralfit check-tools --url http://127.0.0.1:8000
 
 This sends a single tool-call request and validates its name and arguments. It executes no tool and is not an agent benchmark or a quality evaluation.
 
-## Search controls
+## Controlled study
+
+For a larger experiment, `study` separates configuration selection from evaluation. It compares upstream automatic fitting, the MistralFit selection and an exported [llama-autotune](https://github.com/Najafu/llama-autotune) configuration on three shared holdout prompts with 128/256-token budgets, balanced repeated server starts, native timing, output hashes and sampled memory.
+
+```bash
+python -m mistralfit study /models/small4.gguf --preflight
+python -m mistralfit study /models/small4.gguf --server /opt/llama/llama-server \
+  --competitor-profile results/autotune-profile.json --out results/study.json
+```
+
+The [workstation guide](docs/controlled-study.md) includes a pinned-reference pipeline script and Windows instructions. It requires appropriate local hardware. Different search budgets/workloads mean this evaluates selected configurations, not the superiority of a tuning algorithm. The GPU protocol has not yet been executed on Small 4.
+
+## Search controls for tune
 
 | Option | Meaning |
 |---|---|
@@ -127,7 +139,7 @@ NVIDIA discovery uses `nvidia-smi`; Windows RAM uses the OS API and Linux RAM re
 
 ## How results are interpreted
 
-- Tensor storage comes from GGUF tensor spans, including alignment padding. KV/scratch memory is an estimate; **peak RSS/VRAM is not measured**.
+- Tensor storage comes from GGUF tensor spans, including alignment padding. KV/scratch memory is an estimate. `study` additionally records **observed** server RSS/VRAM sampling peaks where supported; `tune` does not sample them. Neither guarantees actual maxima.
 - The native `/completion` streaming endpoint supplies token counts and decode timings. The client measures time to the first emitted token. Timing fields are never fabricated from character counts.
 - One warmup request precedes three measured requests by default. Prompt caching is disabled, and trials reporting reused prompt tokens are excluded.
 - Full fixed-length generation ignores EOS for a consistent token budget. It measures a decoding workload, not normal chat completion quality.
@@ -156,7 +168,7 @@ No global ranking is published before there is a reliable collection of comparab
 
 1. Validate full Small 4 inference on real Windows/Linux NVIDIA hardware and publish raw baseline comparisons.
 2. Test expert-cache search across supported upstream versions; improve MLA KV estimates from measured allocations.
-3. Add sampled process/GPU memory and explicit device-identity mapping.
+3. Validate the new process/GPU sampling on a workstation and add explicit device-identity mapping.
 4. Add a small, versioned quality/tool-use evaluation and several prompt lengths.
 5. Use profiling evidence to choose a specific upstream optimization or native kernel to implement.
 6. Evaluate other Mistral models only after weights, architecture and hardware are available.

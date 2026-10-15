@@ -106,6 +106,27 @@ def parser():
     tuning.add_argument("--prompt-file", type=Path, help="local workload; only its hash is saved in the report")
     tuning.add_argument("--sha256", action="store_true", help="hash full weights for stronger reproducibility")
     tuning.add_argument("--no-repack", action="store_true", help="disable backend weight repacking in all candidates; useful for constrained RAM")
+    study = sub.add_parser("study", help="compare selected configurations on holdout workloads")
+    study.add_argument("model")
+    study.add_argument("--server")
+    study.add_argument("--competitor-profile", type=Path, help="Najafu/llama-autotune exported launch profile")
+    study.add_argument("--competitor-provenance", type=Path, help="optional search metadata from run_gpu_study.py")
+    study.add_argument("--out", type=Path, default=Path("results/study.json"))
+    study.add_argument("--ctx", type=positive, default=4096)
+    study.add_argument("--tokens", default="128,256", help="comma-separated generation budgets, each at least 128")
+    study.add_argument("--rounds", type=positive, default=3, help="independent server starts per configuration")
+    study.add_argument("--repeats", type=positive, default=3)
+    study.add_argument("--warmups", type=positive, default=1)
+    study.add_argument("--threads", type=positive, default=max(1, (os.cpu_count() or 2) // 2))
+    study.add_argument("--gpu", type=nonnegative, default=0)
+    study.add_argument("--ram-gib", type=positive_float)
+    study.add_argument("--gpu-gib", type=positive_float)
+    study.add_argument("--timeout", type=positive_float, default=600)
+    study.add_argument("--startup-timeout", type=positive_float, default=600)
+    study.add_argument("--sample-interval", type=positive_float, default=1)
+    study.add_argument("--no-repack", action="store_true")
+    study.add_argument("--preflight", action="store_true", help="inspect setup only; no inference")
+    study.add_argument("--allow-cpu", action="store_true", help="explicitly permit a resident CPU study")
     reporting = sub.add_parser("report", help="render an experiment JSON as a standalone offline HTML report")
     reporting.add_argument("experiment", type=Path)
     reporting.add_argument("--out", type=Path, default=Path("results/report.html"))
@@ -238,12 +259,34 @@ def main(argv=None):
                 print("Winner:", experiment["winner"] or "none")
                 print("JSON:", args.out, "| HTML:", html_path)
                 return 0 if experiment["winner"] else 2
+        elif args.action == "study":
+            from .study import study
+            budgets = tuple(int(n.strip()) for n in args.tokens.split(","))
+            if len(set(budgets)) != len(budgets):
+                raise ValueError("Generation budgets must be distinct")
+            result = study(args.model, resolve_server(args.server) if not args.preflight else args.server, args.out,
+                           competitor_profile=args.competitor_profile, competitor_provenance=args.competitor_provenance,
+                           context=args.ctx, token_budgets=budgets, rounds=args.rounds, repeats=args.repeats,
+                           warmups=args.warmups, threads=args.threads, gpu=args.gpu, ram_gib=args.ram_gib,
+                           gpu_gib=args.gpu_gib, timeout=args.timeout, startup_timeout=args.startup_timeout,
+                           sample_interval=args.sample_interval, repack=not args.no_repack, preflight=args.preflight,
+                           allow_cpu=args.allow_cpu)
+            print("Study:", result["status"])
+            for blocker in result["blockers"]:
+                print("Blocked:", blocker)
+            print("JSON:", args.out, "| HTML:", args.out.with_suffix(".html"))
+            return 0 if result["status"] in ("complete", "ready") else 2
         elif args.action == "report":
             result = json.loads(args.experiment.read_text(encoding="utf-8"))
-            if result.get("schema_version") != 1:
+            if result.get("schema_version") not in (1, "study-1"):
                 raise ValueError("Unsupported report schema")
             args.out.parent.mkdir(parents=True, exist_ok=True)
-            args.out.write_text(render(result), encoding="utf-8")
+            if result["schema_version"] == "study-1":
+                from .study import render_study
+                rendered = render_study(result)
+            else:
+                rendered = render(result)
+            args.out.write_text(rendered, encoding="utf-8")
             print(args.out)
         elif args.action == "serve":
             return _serve(args)

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 — 2026-10-15
+
+- Add `study`: holdout workloads with 128/256-token budgets, separate calibration, three selected configurations, balanced process-start rounds and per-case native timing/hash results.
+- Import a validated Najafu/llama-autotune launch profile and record context normalization; reject different KV precision, unsupported flags and multi-GPU settings.
+- Add a pinned-reference orchestration script, full model/executable checksums and external-search provenance.
+- Sample server RSS and NVIDIA process VRAM when supported; collect Linux CPU/I/O/page-fault deltas and separate startup, prompt and decode observations. Missing counters remain null.
+- Enforce completion deadlines through slow response headers and partial SSE lines, and return on the final event without waiting for connection closure.
+- Detect procfs PID namespace mismatches before sampling, avoiding attribution to an unrelated host process.
+- Add three separate JSON functional checks. These do not establish general quality parity.
+
+The workstation GPU study has **not** been executed in the available 8 GiB/no-GPU environment. The previous constrained CPU data remains the only real Small 4 experiment. Protocol regression timings are separate from model measurements.
+
 ## 0.1.1 — 2026-10-15
 
 - Add an explicit `--no-repack` experiment control, validate backend support, record it and preserve it when launching the measured winner.

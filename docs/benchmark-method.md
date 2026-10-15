@@ -1,5 +1,7 @@
 # Benchmark method
 
+This page describes `tune`. For repeated multi-prompt evaluation, an external autotuner export and process-memory sampling, see the [`study` workstation protocol](controlled-study.md). Its GPU implementation is awaiting real model/hardware validation.
+
 ## Experimental unit
 
 One candidate is one explicit tensor-placement configuration of the same llama-server executable and GGUF shard set. The initial release searches a small set of candidates rather than every possible GPU layer count, CPU expert count or cache size. Candidate order is shuffled deterministically and saved.
@@ -34,13 +36,13 @@ Generated text and prompts are not saved in the experiment. Output hashes can sh
 
 The structural fingerprint hashes the GGUF header bytes and file sizes for every shard. It detects metadata/layout changes quickly but intentionally does not hash weight payloads. Changing a weight without changing its layout can evade this fingerprint. `--sha256` explicitly reads and hashes every file, and those hashes are verified by `serve` when present. Use them in published experiments.
 
-The runtime's `--version` output is recorded and compared on launch. Version strings are not binary checksums. Full executable integrity and reproducible builds are outside v0.1.
+The runtime's `--version` output is recorded and compared on launch. Version strings are not binary checksums. `study` additionally hashes the server executable; shared libraries and reproducible builds remain outside that check.
 
 ## Memory
 
 Weight storage is measured from GGUF tensor offsets. Those spans include padding and do not equal actual resident memory. Host and GPU estimates use tensor placement, an expanded f16 KV calculation when metadata is available, and scratch headroom. MLA and backend allocation can differ substantially; incomplete metadata falls back to a documented heuristic. The planner can reject feasible candidates conservatively or miss an OOM. It never certifies a fit.
 
-Available RAM and free GPU memory are sampled before the experiment, not monitored throughout it. Apple Silicon CPU/GPU allocations share one pool and are not added together. Peak RSS, peak VRAM, actual offloaded tensor allocation, disk bandwidth and expert-cache hit rates are not measured in this release.
+For `tune`, available RAM and free GPU memory are sampled before the experiment, not monitored throughout it. Apple Silicon CPU/GPU allocations share one pool and are not added together. `study` additionally samples observed server RSS/VRAM peaks where supported and Linux I/O/fault counters. Guaranteed peak RSS/VRAM, actual offloaded tensor allocation, disk bandwidth, expert-transfer latency and cache hit rates remain unmeasured.
 
 Linux cgroup budgets include an estimate of clean inactive file cache that the kernel can reclaim; dirty/writeback pages are deducted conservatively. This prevents a recently downloaded model's cache from being treated as entirely unreclaimable usage. It is a planning estimate, not a memory-allocation guarantee. Counter definitions are documented by the [Linux kernel](https://docs.kernel.org/admin-guide/cgroup-v2.html#memory).
 

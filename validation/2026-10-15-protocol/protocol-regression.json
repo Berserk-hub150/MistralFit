@@ -1,0 +1,155 @@
+{
+  "scope": "HTTP protocol regression fixture only. No inference, model speed, GPU speed or quality measurement.",
+  "python": "3.12.14",
+  "baseline_commit": "52554f55b6e87755a6f91f5385b0393584a1d61e",
+  "baseline_runtime_sha256": "5d2896df4670e77c9c18f1efcea714f810bb04aeb5e8d646be0051cd6bf0b438",
+  "fixed_runtime_sha256": "0b06620459608b360780d5d7f7720ae1f4bee26b61883e8c7db68d1adbc0867b",
+  "fixture_sha256": "49b140bf584ea606e6a4e0213da1d3d0f023da97ba70401adc4116cef406df1a",
+  "repetitions_per_case": 3,
+  "results": [
+    {
+      "client": "before",
+      "fixture": "slow-headers",
+      "configured_timeout_seconds": 0.08,
+      "median_elapsed_seconds": 0.5350375099999383,
+      "samples": [
+        {
+          "outcome": "RuntimeError_",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.5326805529998637
+        },
+        {
+          "outcome": "RuntimeError_",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.5350375099999383
+        },
+        {
+          "outcome": "RuntimeError_",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.5371179189999111
+        }
+      ]
+    },
+    {
+      "client": "before",
+      "fixture": "slow-line",
+      "configured_timeout_seconds": 0.08,
+      "median_elapsed_seconds": 0.6795757779998439,
+      "samples": [
+        {
+          "outcome": "RuntimeError_",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.6796131179999065
+        },
+        {
+          "outcome": "RuntimeError_",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.6795757779998439
+        },
+        {
+          "outcome": "RuntimeError_",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.6792927980000059
+        }
+      ]
+    },
+    {
+      "client": "before",
+      "fixture": "linger-after-final",
+      "configured_timeout_seconds": 2,
+      "median_elapsed_seconds": 0.6111578029999691,
+      "samples": [
+        {
+          "outcome": "completed",
+          "generated_fixture_tokens": 4,
+          "fixture_output_sha256": "f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+          "elapsed_seconds": 0.6111578029999691
+        },
+        {
+          "outcome": "completed",
+          "generated_fixture_tokens": 4,
+          "fixture_output_sha256": "f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+          "elapsed_seconds": 0.6112572560000444
+        },
+        {
+          "outcome": "completed",
+          "generated_fixture_tokens": 4,
+          "fixture_output_sha256": "f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+          "elapsed_seconds": 0.6109876010000335
+        }
+      ]
+    },
+    {
+      "client": "after",
+      "fixture": "slow-headers",
+      "configured_timeout_seconds": 0.08,
+      "median_elapsed_seconds": 0.08060824400013189,
+      "samples": [
+        {
+          "outcome": "TimeoutError",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.08065531599982023
+        },
+        {
+          "outcome": "TimeoutError",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.0805049999999028
+        },
+        {
+          "outcome": "TimeoutError",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.08060824400013189
+        }
+      ]
+    },
+    {
+      "client": "after",
+      "fixture": "slow-line",
+      "configured_timeout_seconds": 0.08,
+      "median_elapsed_seconds": 0.08043288999988363,
+      "samples": [
+        {
+          "outcome": "TimeoutError",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.08043288999988363
+        },
+        {
+          "outcome": "TimeoutError",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.08041915800004062
+        },
+        {
+          "outcome": "TimeoutError",
+          "message": "Completion exceeded the wall-clock deadline",
+          "elapsed_seconds": 0.0805334760000278
+        }
+      ]
+    },
+    {
+      "client": "after",
+      "fixture": "linger-after-final",
+      "configured_timeout_seconds": 2,
+      "median_elapsed_seconds": 0.010924728999953004,
+      "samples": [
+        {
+          "outcome": "completed",
+          "generated_fixture_tokens": 4,
+          "fixture_output_sha256": "f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+          "elapsed_seconds": 0.010963426999978765
+        },
+        {
+          "outcome": "completed",
+          "generated_fixture_tokens": 4,
+          "fixture_output_sha256": "f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+          "elapsed_seconds": 0.010830125999973461
+        },
+        {
+          "outcome": "completed",
+          "generated_fixture_tokens": 4,
+          "fixture_output_sha256": "f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+          "elapsed_seconds": 0.010924728999953004
+        }
+      ]
+    }
+  ]
+}

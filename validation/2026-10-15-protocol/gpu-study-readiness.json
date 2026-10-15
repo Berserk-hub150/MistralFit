@@ -1,0 +1,48 @@
+{
+  "scope": "Capacity/readiness inspection only; no new model generation or GPU experiment was performed.",
+  "status": "blocked",
+  "hardware": {
+    "system": "Linux",
+    "machine": "x86_64",
+    "cpu_count": 9,
+    "ram_total": 8589934592,
+    "ram_available": 8023293952,
+    "gpus": [],
+    "unified_memory": false,
+    "notes": [
+      "RAM constrained by the container cgroup; available budget includes estimated clean inactive file cache.",
+      "No NVIDIA GPU detected; AMD/Intel GPU budgets can be supplied manually."
+    ]
+  },
+  "environment": {
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "python": "3.12.14",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+    "affinity_cpu_count": 9,
+    "cgroup_cpu_quota_cores": 8.0,
+    "nvidia_driver_versions": null
+  },
+  "target_model_source": "benchmarks/2026-10-15-small4-iq1s-cpu/comparison.json",
+  "target_model": {
+    "files": [
+      "mistralai_Mistral-Small-4-119B-2603-IQ1_S.gguf"
+    ],
+    "file_bytes": 26882944256,
+    "weight_bytes": 26875039744,
+    "architecture": "mistral4",
+    "name": "Mistral Small 4 119B 2603",
+    "blocks": 36,
+    "routed_expert_bytes": 24998051840,
+    "tensor_count": 579,
+    "header_fingerprint": "fc51106f00eb5b26e3781cbe7c71d5cab3db172d01d3fa9469f020e3899aab46",
+    "identity_note": "SHA-256 of structural headers and file sizes; NOT a full weights checksum."
+  },
+  "previously_verified_weight_sha256": {
+    "mistralai_Mistral-Small-4-119B-2603-IQ1_S.gguf": "e6363fa561991421a01c665e18b573f3affdef8c1eb039e63da8fcfcb8f826d5"
+  },
+  "blockers": [
+    "No NVIDIA GPU is available in this environment.",
+    "The previously measured complete Small 4 IQ1_S weights exceed this environments 8 GiB RAM limit."
+  ],
+  "new_gpu_performance_results": null
+}

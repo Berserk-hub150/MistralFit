@@ -49,6 +49,8 @@ Apri `http://127.0.0.1:8000`. Le API locali sono disponibili su `http://127.0.0.
 
 ## 4. Sviluppa e contribuisci
 
+Per il confronto più esteso è disponibile il comando `study`: tre prompt, generazioni da 128/256 token, riavvii ripetuti, confronto con un autotuner esterno e campioni di memoria. La [guida per la prova su workstation](docs/controlled-study.md) contiene i comandi Windows. Il protocollo è implementato e verificato con test HTTP; la prova GPU reale resta da eseguire su una macchina adatta.
+
 Esegui prima i test:
 
 ```powershell

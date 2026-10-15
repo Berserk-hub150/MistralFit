@@ -1,6 +1,8 @@
 include LICENSE README.md LEGGIMI.md CONTRIBUTING.md CHANGELOG.md ROADMAP.md SECURITY.md SUPPORT.md CODE_OF_CONDUCT.md
 recursive-include docs *.md *.svg
 recursive-include examples *.md *.txt
-recursive-include scripts *.ps1
+recursive-include scripts *.ps1 *.py
 recursive-include tests *.py
 recursive-include .github *.yml *.md
+recursive-include benchmarks *.md *.json *.html *.txt *.py
+recursive-include validation *.md *.json *.py

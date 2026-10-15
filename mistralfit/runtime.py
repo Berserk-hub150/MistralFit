@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import http.client
 import json
 import math
 import os
@@ -12,10 +13,13 @@ import shutil
 import socket
 import subprocess
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+from contextlib import contextmanager
+from urllib.parse import urlsplit
 
 LOCAL_HTTP = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
@@ -108,9 +112,11 @@ def json_request(base: str, route: str, payload=None, *, timeout: float = 30, ap
 
 
 class Server:
-    def __init__(self, args_builder, *, startup_timeout: float = 300):
+    def __init__(self, args_builder, *, startup_timeout: float = 300, on_spawn=None):
         self.args_builder = args_builder
         self.startup_timeout = startup_timeout
+        self.on_spawn = on_spawn
+        self.startup_seconds = None
         self.process = None
         self.log = None
         # A random URL-safe token can begin with '-'; some command-line
@@ -121,6 +127,7 @@ class Server:
         self.last_health_error = "No health response received"
 
     def __enter__(self):
+        started = time.monotonic()
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
@@ -130,6 +137,8 @@ class Server:
         try:
             self.process = subprocess.Popen(self.argv, stdout=self.log, stderr=subprocess.STDOUT,
                                             env=clean_environment(), stdin=subprocess.DEVNULL)
+            if self.on_spawn:
+                self.on_spawn(self.process.pid)
             deadline = time.monotonic() + self.startup_timeout
             while time.monotonic() < deadline:
                 if self.process.poll() is not None:
@@ -139,6 +148,7 @@ class Server:
                     if health.get("status") == "ok":
                         # Authenticated probe prevents adopting an unrelated server on a raced port.
                         json_request(self.base, "/props", timeout=2, api_key=self.api_key)
+                        self.startup_seconds = time.monotonic() - started
                         return self
                     self.last_health_error = "Backend health status was " + repr(health.get("status"))
                 except (OSError, ValueError, urllib.error.URLError) as exc:
@@ -170,18 +180,71 @@ class Server:
             self.log.close()
 
 
+@contextmanager
+def completion_response(base: str, body: dict, *, timeout: float, api_key: str | None = None):
+    """A local request with a deadline covering headers and partial SSE lines."""
+    url = urlsplit(base)
+    if (url.scheme != "http" or url.hostname not in ("127.0.0.1", "localhost", "::1")
+            or url.path not in ("", "/") or url.query or url.fragment or url.username or url.password):
+        raise ValueError("Completion requests require a local HTTP base URL")
+    if not math.isfinite(timeout) or timeout <= 0:
+        raise ValueError("Completion timeout must be finite and positive")
+    # Literal loopback avoids DNS waits; no environment proxy can intercept a request.
+    host = "::1" if url.hostname == "::1" else "127.0.0.1"
+    connection = http.client.HTTPConnection(host, url.port or 80, timeout=timeout)
+    started = time.monotonic()
+    timer, response = None, None
+    expired = threading.Event()
+    try:
+        connection.connect()
+        transport = connection.sock
+
+        def abort():
+            expired.set()
+            try:
+                # HTTP/1.0 can detach the transport from the connection.
+                transport.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+
+        remaining = timeout - (time.monotonic() - started)
+        if remaining <= 0:
+            raise TimeoutError("Completion exceeded the wall-clock deadline")
+        timer = threading.Timer(remaining, abort)
+        timer.daemon = True
+        timer.start()
+        headers = {"Content-Type": "application/json"}
+        if api_key:
+            headers["Authorization"] = "Bearer " + api_key
+        connection.request("POST", "/completion", body=json.dumps(body).encode(), headers=headers)
+        response = connection.getresponse()
+        if response.status != 200:
+            raise RuntimeError_(f"Backend completion returned HTTP {response.status}")
+        yield response
+        if expired.is_set() or time.monotonic() - started >= timeout:
+            raise TimeoutError("Completion exceeded the wall-clock deadline")
+    except (OSError, http.client.HTTPException, RuntimeError_) as exc:
+        if expired.is_set() or time.monotonic() - started >= timeout:
+            raise TimeoutError("Completion exceeded the wall-clock deadline") from exc
+        if isinstance(exc, http.client.HTTPException):
+            raise RuntimeError_("Backend HTTP protocol error: " + type(exc).__name__) from exc
+        raise
+    finally:
+        if timer:
+            timer.cancel()
+            timer.join()
+        if response:
+            response.close()
+        connection.close()
+
+
 def stream_completion(base: str, prompt: str, *, tokens: int, seed: int = 42,
                       timeout: float = 120, api_key: str | None = None) -> dict:
     body = {"prompt": prompt, "n_predict": tokens, "stream": True, "temperature": 0,
             "seed": seed, "cache_prompt": False, "ignore_eos": True, "return_tokens": True}
-    headers = {"Content-Type": "application/json"}
-    if api_key:
-        headers["Authorization"] = "Bearer " + api_key
-    req = urllib.request.Request(base + "/completion", data=json.dumps(body).encode(), headers=headers)
     start, first, final = time.monotonic(), None, None
     output, token_ids = [], []
-    # urlopen's timeout also bounds stalled reads; the monotonic deadline bounds active streams.
-    with LOCAL_HTTP.open(req, timeout=timeout) as response:
+    with completion_response(base, body, timeout=timeout, api_key=api_key) as response:
         event_lines = []
         for line in response:
             if time.monotonic() - start > timeout:
@@ -207,6 +270,7 @@ def stream_completion(base: str, prompt: str, *, tokens: int, seed: int = 42,
                 token_ids.extend(ids)
                 if event.get("stop"):
                     final = event
+                    break
         if event_lines:
             raise RuntimeError_("Unterminated SSE event")
     if final is None:

@@ -50,11 +50,30 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"choices": [{"message": {"tool_calls": [{"function": {"name": "add", "arguments": '{"a":19,"b":23}'}}]}}]})
         if self.path != "/completion":
             return self.send_json({}, 404)
-        self.send_response(200)
-        self.send_header("Content-Type", "text/event-stream")
-        self.end_headers()
+        if body.get("stream") is False:
+            # Fixed protocol responses only; this fixture does not reason or run a model.
+            prompt = body.get("prompt", "")
+            answer = {"answer": 42} if "19 + 23" in prompt else {"name": "Paolo", "pears": 5} if "Paolo" in prompt else {"values": [-1, 2, 8, 8]}
+            return self.send_json({"content": json.dumps(answer), "truncated": False})
+        if args.fixture_mode == "slow-headers":
+            try:
+                for byte in b"HTTP/1.0 200 OK\r\nContent-Type: text/event-stream\r\n\r\n":
+                    self.wfile.write(bytes([byte]))
+                    self.wfile.flush()
+                    time.sleep(0.01)
+            except (BrokenPipeError, ConnectionResetError):
+                return
+        else:
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.end_headers()
         count = body["n_predict"]
         try:
+            if args.fixture_mode == "slow-line":
+                for byte in b': an unfinished event line keeps delivering bytes without a newline\n':
+                    self.wfile.write(bytes([byte]))
+                    self.wfile.flush()
+                    time.sleep(0.01)
             time.sleep(0.005)
             self.wfile.write(b'data: {"content":"fixture", "tokens":[123], "stop":false}\n\n')
             self.wfile.flush()
@@ -75,6 +94,8 @@ class Handler(BaseHTTPRequestHandler):
                     "truncated": args.fixture_mode == "truncated"}
             self.wfile.write(("data: " + json.dumps(data) + "\n\n").encode())
             self.wfile.flush()
+            if args.fixture_mode == "linger-after-final":
+                time.sleep(0.6)
         except (BrokenPipeError, ConnectionResetError):
             pass
 

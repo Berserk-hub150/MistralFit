@@ -17,5 +17,5 @@
 <g fill="#65877f"><rect x="148" y="124" width="50" height="44" rx="7"/><rect x="209" y="124" width="50" height="44" rx="7"/></g>
 <path d="M26 194H290" stroke="#3a5062"/>
 <circle cx="34" cy="223" r="5" fill="#ffc76c"/><text x="48" y="228" fill="#c0cfdd" font-size="14">GPU</text><circle cx="132" cy="223" r="5" fill="#65877f"/><text x="146" y="228" fill="#c0cfdd" font-size="14">CPU / RAM</text>
-</g><text x="64" y="403" fill="#71869b" font-size="12">Independent community project · Experimental v0.1 · No published speedup claims</text>
+</g><text x="64" y="403" fill="#71869b" font-size="12">Independent community project · Experimental v0.2 · No published speedup claims</text>
 </g></svg>

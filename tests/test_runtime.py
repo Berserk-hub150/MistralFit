@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -58,6 +59,21 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual(result["generated_tokens"], 4)
             self.assertNotIn("fixture", json.dumps(result))
         self.assertIsNotNone(process.poll())
+
+    def test_deadline_covers_trickling_headers_and_partial_lines(self):
+        for mode in ("slow-headers", "slow-line"):
+            with self.subTest(mode=mode), fixture(mode) as local:
+                started = time.monotonic()
+                with self.assertRaisesRegex(TimeoutError, "wall-clock deadline"):
+                    stream_completion(local.base, "test", tokens=4, timeout=0.08, api_key=local.api_key)
+                self.assertLess(time.monotonic() - started, 0.45)
+
+    def test_final_event_does_not_wait_for_connection_close(self):
+        with fixture("linger-after-final") as local:
+            started = time.monotonic()
+            result = stream_completion(local.base, "test", tokens=4, timeout=2, api_key=local.api_key)
+            self.assertEqual(result["generated_tokens"], 4)
+            self.assertLess(time.monotonic() - started, 0.4)
 
     def test_incomplete_or_incomparable_trials_are_rejected(self):
         for mode, message in [("missing-final", "before"), ("wrong-count", "expected"),
