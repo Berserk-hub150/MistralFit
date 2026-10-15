@@ -18,7 +18,7 @@ Explicit candidates disable automatic fitting and set their own GPU-layer and ex
 
 ## Timing
 
-The client starts a monotonic clock immediately before making the local native `/completion` request. TTFT is measured when the first SSE event containing generated content or token IDs arrives. Decode speed comes from the backend's `predicted_n / predicted_ms`; it is not estimated from text length. TTFT includes client/HTTP overhead and the processing needed before the first emitted event.
+The client starts a monotonic clock immediately before making the local native `/completion` request. TTFT is measured when the first SSE event containing generated content or token IDs arrives. Decode speed uses the backend's `timings.predicted_per_second` directly. Recent builds measure N-1 decode intervals for N emitted tokens, so dividing `predicted_n` by `predicted_ms` can overstate throughput. TTFT includes client/HTTP overhead and the processing needed before the first emitted event. At least two generated tokens and a positive backend-reported rate are required.
 
 `cache_prompt` is false and the prompt-cache RAM allocation is disabled when the installed build supports it. A trial reporting nonzero `timings.cache_n` is excluded. Unsupported flags, loading failures, completion timeouts, truncated generations, missing timing fields and wrong generated token counts all remain visible in the report. Failed candidates cannot win. Ctrl+C stops the child and preserves the partial JSON experiment.
 

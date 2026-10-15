@@ -61,13 +61,16 @@ class Handler(BaseHTTPRequestHandler):
             time.sleep(0.005)
             if args.fixture_mode == "missing-final":
                 return
-            timings = {"predicted_n": count, "predicted_ms": 20.0, "prompt_n": 3, "prompt_ms": 2, "cache_n": 0}
+            timings = {"predicted_n": count, "predicted_ms": 20.0, "predicted_per_second": (count - 1) / 0.02,
+                       "prompt_n": 3, "prompt_ms": 2, "cache_n": 0}
             if args.fixture_mode == "wrong-count":
                 timings["predicted_n"] = count - 1
             if args.fixture_mode == "cached":
                 timings["cache_n"] = 2
             if args.fixture_mode == "missing-timing":
                 timings = {}
+            if args.fixture_mode == "missing-rate":
+                timings.pop("predicted_per_second", None)
             data = {"content": "", "tokens": [], "stop": True, "timings": timings,
                     "truncated": args.fixture_mode == "truncated"}
             self.wfile.write(("data: " + json.dumps(data) + "\n\n").encode())

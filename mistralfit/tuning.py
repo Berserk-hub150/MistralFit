@@ -64,6 +64,8 @@ def tune(plan: dict, model_path: str, server_path: str, output: Path, *,
          notify=print, checksums: dict | None = None, repack: bool = True) -> dict:
     if repeats < 1 or warmups < 0 or tokens < 1 or threads < 1:
         raise ValueError("Invalid experiment settings")
+    if tokens < 2:
+        raise ValueError("Throughput measurement requires at least 2 generated tokens")
     if tokens >= plan["context"]:
         raise ValueError("The generation budget must be smaller than the fixed context")
     info = runtime_info(server_path)
@@ -72,6 +74,7 @@ def tune(plan: dict, model_path: str, server_path: str, output: Path, *,
     settings = {"context": plan["context"], "tokens": tokens, "repeats": repeats, "warmups": warmups,
                 "threads": threads, "seed": 42, "temperature": 0, "cache_prompt": False,
                 "ignore_eos": True, "weight_repacking": repack,
+                "decode_rate_source": "backend timings.predicted_per_second",
                 "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
                 "prompt_characters": len(prompt), "max_median_ttft_seconds": max_ttft,
                 "objective": "highest median decode tokens/s among successful candidates satisfying the TTFT constraint",

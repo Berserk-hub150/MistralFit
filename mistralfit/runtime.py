@@ -215,10 +215,13 @@ def stream_completion(base: str, prompt: str, *, tokens: int, seed: int = 42,
         raise RuntimeError_("Prompt or completion was truncated; use a larger fixed context")
     timing = final.get("timings", {})
     count, duration = timing.get("predicted_n"), timing.get("predicted_ms")
+    rate = timing.get("predicted_per_second")
     if not isinstance(count, int) or count != tokens:
         raise RuntimeError_(f"Backend generated {count!r} tokens, expected the fixed budget {tokens}")
     if not isinstance(duration, (int, float)) or not math.isfinite(duration) or duration <= 0:
         raise RuntimeError_("Backend did not expose valid decode timings")
+    if isinstance(rate, bool) or not isinstance(rate, (int, float)) or not math.isfinite(rate) or rate <= 0:
+        raise RuntimeError_("Backend did not expose a valid decode rate")
     if first is None:
         raise RuntimeError_("No generated token was observed in the stream")
     prompt_n, cached_n = timing.get("prompt_n", 0), timing.get("cache_n", 0)
@@ -226,7 +229,9 @@ def stream_completion(base: str, prompt: str, *, tokens: int, seed: int = 42,
         raise RuntimeError_("Backend reused prompt tokens despite cache_prompt=false; trial excluded")
     text = "".join(output)
     return {"ttft_seconds": first, "wall_seconds": time.monotonic() - start,
-            "decode_tokens_per_second": count / (duration / 1000),
+            # Recent llama.cpp builds count N-1 decode intervals for N tokens.
+            # Use the backend's own rate rather than overstating it with N/ms.
+            "decode_tokens_per_second": float(rate),
             "generated_tokens": count, "prompt_tokens": prompt_n,
             "prompt_ms": timing.get("prompt_ms"), "decode_ms": duration,
             "output_sha256": hashlib.sha256(text.encode()).hexdigest(),

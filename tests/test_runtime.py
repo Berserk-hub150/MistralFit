@@ -52,7 +52,8 @@ class RuntimeTests(unittest.TestCase):
         with fixture() as local:
             result = stream_completion(local.base, "test", tokens=4, api_key=local.api_key)
             process = local.process
-            self.assertAlmostEqual(result["decode_tokens_per_second"], 200)
+            # The backend reports 3 decode intervals for 4 emitted tokens.
+            self.assertAlmostEqual(result["decode_tokens_per_second"], 150)
             self.assertGreater(result["ttft_seconds"], 0)
             self.assertEqual(result["generated_tokens"], 4)
             self.assertNotIn("fixture", json.dumps(result))
@@ -60,7 +61,8 @@ class RuntimeTests(unittest.TestCase):
 
     def test_incomplete_or_incomparable_trials_are_rejected(self):
         for mode, message in [("missing-final", "before"), ("wrong-count", "expected"),
-                              ("cached", "reused"), ("missing-timing", "expected"), ("truncated", "truncated")]:
+                              ("cached", "reused"), ("missing-timing", "expected"),
+                              ("missing-rate", "valid decode rate"), ("truncated", "truncated")]:
             with self.subTest(mode=mode), fixture(mode) as local:
                 with self.assertRaisesRegex(RuntimeError_, message):
                     stream_completion(local.base, "test", tokens=4, api_key=local.api_key)
