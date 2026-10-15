@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MistralFit experiment</title><style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#11151a;color:#e5ebef;font:16px system-ui,sans-serif}
+main{max-width:1100px;margin:auto;padding:52px 28px}.tag{color:#f7b955;font-size:13px;letter-spacing:2px}h1{font-size:46px;margin:14px 0}
+p{color:#aab8c4;line-height:1.6}.cards{display:flex;gap:14px;flex-wrap:wrap;margin:30px 0}.card{background:#1c232c;padding:22px;border-radius:12px;flex:1;min-width:180px}
+.card strong{display:block;font-size:23px;margin-top:10px}table{width:100%;border-collapse:collapse}td,th{padding:15px 10px;text-align:left;border-bottom:1px solid #303943}
+th{color:#aab8c4;font-size:13px}td:last-child{font-size:13px;color:#aab8c4}.track{background:#303943;height:5px;border-radius:4px;margin-top:8px}.track div{height:5px;background:#f7b955;border-radius:4px}
+.scroll{overflow-x:auto}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#1c232c;padding:22px;border-radius:12px}.notice{border-left:3px solid #f7b955;padding-left:18px}
+</style><main><div class="tag">MISTRALFIT · LOCAL INFERENCE EXPERIMENT</div><h1>Measure. Compare. Choose.</h1>
+<p>Mistral Small 4 119B 2603 · 2026-10-15T16:25:19.548923+00:00 · complete</p>
+<div class="cards"><div class="card">Best measured candidate<strong>cpu-only</strong></div>
+<div class="card">Fixed context<strong>512 tokens</strong></div><div class="card">Measured requests / profile<strong>1</strong></div></div>
+<p>No valid upstream comparison available. Output comparison unavailable.</p><div class="scroll"><table><thead><tr><th>Placement</th><th>Status</th><th>Median decode tok/s</th><th>Median TTFT</th><th>Notes</th></tr></thead>
+<tbody><tr><td>cpu-only ★</td><td>ok</td><td>0.10<div class="track"><div style="width:100.00%"></div></div></td><td>40.068s</td><td></td></tr></tbody></table></div>
+<p class="notice">These measurements belong to this model, runtime, hardware and workload. No language-quality evaluation or peak-memory measurement was performed. Estimates are separate from measurements.</p>
+<h2>Method and reproducibility</h2><pre>{
+  &quot;context&quot;: 512,
+  &quot;tokens&quot;: 4,
+  &quot;repeats&quot;: 1,
+  &quot;warmups&quot;: 0,
+  &quot;threads&quot;: 8,
+  &quot;seed&quot;: 42,
+  &quot;temperature&quot;: 0,
+  &quot;cache_prompt&quot;: false,
+  &quot;ignore_eos&quot;: true,
+  &quot;weight_repacking&quot;: false,
+  &quot;prompt_sha256&quot;: &quot;0ad584df7fe378089a036a5a334c0d46f0a531c2189f936beff1a3a88ecf070c&quot;,
+  &quot;prompt_characters&quot;: 170,
+  &quot;max_median_ttft_seconds&quot;: null,
+  &quot;objective&quot;: &quot;highest median decode tokens/s among successful candidates satisfying the TTFT constraint&quot;,
+  &quot;completion_timeout_seconds&quot;: 300.0,
+  &quot;startup_timeout_seconds&quot;: 600.0,
+  &quot;decode_rate_source&quot;: &quot;backend timings.predicted_per_second&quot;
+}</pre>
+<h2>Limits</h2><ul><li>No language-quality benchmark is performed.</li><li>Output hashes expose differences; matching hashes are not proof of model quality.</li><li>Memory numbers are estimates, not measured peak RSS or VRAM.</li><li>One process start per candidate; repeated requests are not independent thermal runs.</li><li>No model weights, prompts, generated text, API keys, or absolute model paths are included.</li><li>Short CPU microbenchmark under an 8 GiB container cap with weights larger than RAM; not representative GPU or resident-model performance.</li><li>CPU-only and upstream-auto both execute on CPU here. This run does not establish an expert-offload or GPU optimization advantage.</li></ul>
+<h2>Runtime</h2><pre>version: 0.6.0-dev (build 11662, commit c0cb53ac4)
+built with GNU 11.4.0 for Linux x86_64</pre>
+<p>Generated offline. No analytics, remote fonts, JavaScript, or network requests.</p></main></html>

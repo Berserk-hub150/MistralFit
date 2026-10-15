@@ -1,0 +1,354 @@
+{
+  "schema_version": 1,
+  "mistralfit_version": "0.1.1",
+  "status": "complete",
+  "created_at": "2026-10-15T16:30:46.474747+00:00",
+  "settings": {
+    "context": 512,
+    "tokens": 8,
+    "repeats": 3,
+    "warmups": 1,
+    "threads": 8,
+    "seed": 42,
+    "temperature": 0,
+    "cache_prompt": false,
+    "ignore_eos": true,
+    "weight_repacking": false,
+    "prompt_sha256": "0ad584df7fe378089a036a5a334c0d46f0a531c2189f936beff1a3a88ecf070c",
+    "prompt_characters": 170,
+    "max_median_ttft_seconds": null,
+    "objective": "highest median decode tokens/s among successful candidates satisfying the TTFT constraint",
+    "completion_timeout_seconds": 600,
+    "startup_timeout_seconds": 600,
+    "decode_rate_source": "backend timings.predicted_per_second"
+  },
+  "plan": {
+    "schema_version": 1,
+    "model": {
+      "files": [
+        "mistralai_Mistral-Small-4-119B-2603-IQ1_S.gguf"
+      ],
+      "file_bytes": 26882944256,
+      "weight_bytes": 26875039744,
+      "architecture": "mistral4",
+      "name": "Mistral Small 4 119B 2603",
+      "blocks": 36,
+      "routed_expert_bytes": 24998051840,
+      "tensor_count": 579,
+      "header_fingerprint": "fc51106f00eb5b26e3781cbe7c71d5cab3db172d01d3fa9469f020e3899aab46",
+      "identity_note": "SHA-256 of structural headers and file sizes; NOT a full weights checksum."
+    },
+    "hardware": {
+      "system": "Linux",
+      "machine": "x86_64",
+      "cpu_count": 9,
+      "ram_total": 8589934592,
+      "ram_available": 3738910720,
+      "gpus": [],
+      "unified_memory": false,
+      "notes": [
+        "RAM constrained by the container cgroup; available budget includes estimated clean inactive file cache.",
+        "No NVIDIA GPU detected; AMD/Intel GPU budgets can be supplied manually."
+      ]
+    },
+    "context": 512,
+    "ram_budget_bytes": 3738910720,
+    "gpu_budget_bytes": 0,
+    "gpu_index": 0,
+    "kv_estimate_bytes": 21233664,
+    "notes": [
+      "Expanded f16 KV estimate; MLA/SWA backend allocation may differ.",
+      "Weights are measured from tensor spans, including padding; KV and scratch are estimates.",
+      "These are candidate configurations, not proof of compatibility, speed, or memory fit.",
+      "No quantization is changed. One context, prompt and generation budget are used across candidates."
+    ],
+    "profiles": [
+      {
+        "name": "upstream-auto",
+        "gpu_layers": null,
+        "cpu_moe_layers": 0,
+        "expert_cache_mib": 0,
+        "estimated_gpu_bytes": null,
+        "estimated_ram_bytes": 27411910656,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "name": "cpu-only",
+        "gpu_layers": 0,
+        "cpu_moe_layers": 0,
+        "expert_cache_mib": 0,
+        "estimated_gpu_bytes": 0,
+        "estimated_ram_bytes": 27433144320,
+        "eligible": true,
+        "reason": ""
+      }
+    ]
+  },
+  "runtime": {
+    "version": "version: 0.6.0-dev (build 11662, commit c0cb53ac4)\nbuilt with GNU 11.4.0 for Linux x86_64",
+    "capabilities": {
+      "--fit": true,
+      "--n-cpu-moe": true,
+      "--cpu-moe": true,
+      "--moe-cache-mib": true,
+      "--perf": true,
+      "--jinja": true,
+      "--no-repack": true
+    }
+  },
+  "full_model_sha256": {
+    "mistralai_Mistral-Small-4-119B-2603-IQ1_S.gguf": "e6363fa561991421a01c665e18b573f3affdef8c1eb039e63da8fcfcb8f826d5"
+  },
+  "results": [
+    {
+      "profile": {
+        "name": "cpu-only",
+        "gpu_layers": 0,
+        "cpu_moe_layers": 0,
+        "expert_cache_mib": 0,
+        "estimated_gpu_bytes": 0,
+        "estimated_ram_bytes": 27433144320,
+        "eligible": true,
+        "reason": ""
+      },
+      "status": "ok",
+      "samples": [
+        {
+          "ttft_seconds": 56.499741992000054,
+          "wall_seconds": 135.48242678599945,
+          "decode_tokens_per_second": 0.08869537641392784,
+          "generated_tokens": 8,
+          "prompt_tokens": 34,
+          "prompt_ms": 56492.718,
+          "decode_ms": 78921.814,
+          "output_sha256": "84d8ad7808f5fb3b02697cdd5ddad34d7422d9cf248fb97d165b6571d5405a65",
+          "token_ids_sha256": "2c4d54e8edda058c07323e5a26110bd637f7f81ace3d033ed3540a946c160232",
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 34,
+            "prompt_ms": 56492.718,
+            "prompt_per_token_ms": 1661.5505294117647,
+            "prompt_per_second": 0.6018474805903302,
+            "predicted_n": 8,
+            "predicted_ms": 78921.814,
+            "predicted_per_token_ms": 11274.544857142857,
+            "predicted_per_second": 0.08869537641392784
+          },
+          "collector_derived_rate_before_fix": 0.10136614447306039
+        },
+        {
+          "ttft_seconds": 48.405511424,
+          "wall_seconds": 115.77180399699955,
+          "decode_tokens_per_second": 0.10404253710758835,
+          "generated_tokens": 8,
+          "prompt_tokens": 34,
+          "prompt_ms": 48354.77,
+          "decode_ms": 67280.174,
+          "output_sha256": "84d8ad7808f5fb3b02697cdd5ddad34d7422d9cf248fb97d165b6571d5405a65",
+          "token_ids_sha256": "2c4d54e8edda058c07323e5a26110bd637f7f81ace3d033ed3540a946c160232",
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 34,
+            "prompt_ms": 48354.77,
+            "prompt_per_token_ms": 1422.1991176470588,
+            "prompt_per_second": 0.7031364227355441,
+            "predicted_n": 8,
+            "predicted_ms": 67280.174,
+            "predicted_per_token_ms": 9611.453428571429,
+            "predicted_per_second": 0.10404253710758835
+          },
+          "collector_derived_rate_before_fix": 0.11890575669438666
+        },
+        {
+          "ttft_seconds": 34.88361933299984,
+          "wall_seconds": 84.83248520500001,
+          "decode_tokens_per_second": 0.14016776960679778,
+          "generated_tokens": 8,
+          "prompt_tokens": 34,
+          "prompt_ms": 34879.312,
+          "decode_ms": 49940.154,
+          "output_sha256": "84d8ad7808f5fb3b02697cdd5ddad34d7422d9cf248fb97d165b6571d5405a65",
+          "token_ids_sha256": "2c4d54e8edda058c07323e5a26110bd637f7f81ace3d033ed3540a946c160232",
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 34,
+            "prompt_ms": 34879.312,
+            "prompt_per_token_ms": 1025.8621176470588,
+            "prompt_per_second": 0.9747898697084393,
+            "predicted_n": 8,
+            "predicted_ms": 49940.154,
+            "predicted_per_token_ms": 7134.307714285715,
+            "predicted_per_second": 0.14016776960679778
+          },
+          "collector_derived_rate_before_fix": 0.16019173669348316
+        }
+      ],
+      "effective_context": 512,
+      "tokenized_prompt_length": 34,
+      "metrics": {
+        "median_decode_tokens_per_second": 0.10404253710758835,
+        "median_ttft_seconds": 48.405511424,
+        "min_decode_tokens_per_second": 0.08869537641392784,
+        "max_decode_tokens_per_second": 0.14016776960679778,
+        "relative_mad": 0.14750852026791988,
+        "sample_count": 3,
+        "repeat_output_consistent": true
+      }
+    },
+    {
+      "profile": {
+        "name": "upstream-auto",
+        "gpu_layers": null,
+        "cpu_moe_layers": 0,
+        "expert_cache_mib": 0,
+        "estimated_gpu_bytes": null,
+        "estimated_ram_bytes": 27411910656,
+        "eligible": true,
+        "reason": ""
+      },
+      "status": "ok",
+      "samples": [
+        {
+          "ttft_seconds": 33.63599160800004,
+          "wall_seconds": 63.21015504399929,
+          "decode_tokens_per_second": 0.23670060457392136,
+          "generated_tokens": 8,
+          "prompt_tokens": 34,
+          "prompt_ms": 33626.658,
+          "decode_ms": 29573.224,
+          "output_sha256": "84d8ad7808f5fb3b02697cdd5ddad34d7422d9cf248fb97d165b6571d5405a65",
+          "token_ids_sha256": "2c4d54e8edda058c07323e5a26110bd637f7f81ace3d033ed3540a946c160232",
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 34,
+            "prompt_ms": 33626.658,
+            "prompt_per_token_ms": 989.0193529411765,
+            "prompt_per_second": 1.0111025603555368,
+            "predicted_n": 8,
+            "predicted_ms": 29573.224,
+            "predicted_per_token_ms": 4224.7462857142855,
+            "predicted_per_second": 0.23670060457392136
+          },
+          "collector_derived_rate_before_fix": 0.27051497665591007
+        },
+        {
+          "ttft_seconds": 37.79416026299987,
+          "wall_seconds": 88.09932748699975,
+          "decode_tokens_per_second": 0.13915903689143838,
+          "generated_tokens": 8,
+          "prompt_tokens": 34,
+          "prompt_ms": 37784.473,
+          "decode_ms": 50302.159,
+          "output_sha256": "84d8ad7808f5fb3b02697cdd5ddad34d7422d9cf248fb97d165b6571d5405a65",
+          "token_ids_sha256": "2c4d54e8edda058c07323e5a26110bd637f7f81ace3d033ed3540a946c160232",
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 34,
+            "prompt_ms": 37784.473,
+            "prompt_per_token_ms": 1111.3080294117647,
+            "prompt_per_second": 0.8998405244397613,
+            "predicted_n": 8,
+            "predicted_ms": 50302.159,
+            "predicted_per_token_ms": 7186.022714285714,
+            "predicted_per_second": 0.13915903689143838
+          },
+          "collector_derived_rate_before_fix": 0.15903889930450102
+        },
+        {
+          "ttft_seconds": 42.76723255199977,
+          "wall_seconds": 92.17952495200007,
+          "decode_tokens_per_second": 0.141654381521793,
+          "generated_tokens": 8,
+          "prompt_tokens": 34,
+          "prompt_ms": 42745.775,
+          "decode_ms": 49416.05,
+          "output_sha256": "84d8ad7808f5fb3b02697cdd5ddad34d7422d9cf248fb97d165b6571d5405a65",
+          "token_ids_sha256": "2c4d54e8edda058c07323e5a26110bd637f7f81ace3d033ed3540a946c160232",
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 34,
+            "prompt_ms": 42745.775,
+            "prompt_per_token_ms": 1257.2286764705882,
+            "prompt_per_second": 0.7954002471589298,
+            "predicted_n": 8,
+            "predicted_ms": 49416.05,
+            "predicted_per_token_ms": 7059.435714285714,
+            "predicted_per_second": 0.141654381521793
+          },
+          "collector_derived_rate_before_fix": 0.161890721739192
+        }
+      ],
+      "effective_context": 512,
+      "tokenized_prompt_length": 34,
+      "metrics": {
+        "median_decode_tokens_per_second": 0.141654381521793,
+        "median_ttft_seconds": 37.79416026299987,
+        "min_decode_tokens_per_second": 0.13915903689143838,
+        "max_decode_tokens_per_second": 0.23670060457392136,
+        "relative_mad": 0.017615725002976437,
+        "sample_count": 3,
+        "repeat_output_consistent": true
+      }
+    }
+  ],
+  "winner": "upstream-auto",
+  "limits": [
+    "No language-quality benchmark is performed.",
+    "Output hashes expose differences; matching hashes are not proof of model quality.",
+    "Memory numbers are estimates, not measured peak RSS or VRAM.",
+    "One process start per candidate; repeated requests are not independent thermal runs.",
+    "No model weights, prompts, generated text, API keys, or absolute model paths are included.",
+    "Only 8 generated tokens per request: this is a short, I/O-constrained CPU microbenchmark.",
+    "Both tested placements use the CPU on this machine; no GPU/expert-offload advantage is established.",
+    "A shared container and memory-mapped weights larger than its 8 GiB RAM cap make results sensitive to disk/cache state.",
+    "Short CPU microbenchmark under an 8 GiB container cap with weights larger than RAM; not representative GPU or resident-model performance.",
+    "CPU-only and upstream-auto both execute on CPU here. This run does not establish an expert-offload or GPU optimization advantage."
+  ],
+  "trial_order": [
+    "cpu-only",
+    "upstream-auto"
+  ],
+  "speedup_vs_upstream_auto": 1.0,
+  "winner_matches_baseline_output": true,
+  "finished_at": "2026-10-15T16:46:50.174369+00:00",
+  "provenance": {
+    "environment": "Linux container; not a dedicated workstation",
+    "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "visible_logical_cpus": 9,
+    "affinity_cpu_count": 9,
+    "cpu_quota_cores": 8.0,
+    "ram_limit_bytes": 8589934592,
+    "gpu": "none detected",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "python": "3.12.14",
+    "model": {
+      "repository": "bartowski/mistralai_Mistral-Small-4-119B-2603-GGUF",
+      "revision": "f569d04efea9546de10ec040819908fa4e8f1c92",
+      "file": "mistralai_Mistral-Small-4-119B-2603-IQ1_S.gguf",
+      "size": 26882944256,
+      "lfs": {
+        "sha256": "e6363fa561991421a01c665e18b573f3affdef8c1eb039e63da8fcfcb8f826d5",
+        "size": 26882944256,
+        "pointerSize": 136
+      }
+    },
+    "runtime_asset": {
+      "tag": "b11662",
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11662/llama-b11662-bin-ubuntu-x64.tar.gz",
+      "sha256": "08968dbfe8f6fb9b3e467ce6927fb854a22acbb4a637940b4fe8f711395292e5",
+      "size": 17839781
+    },
+    "scope": "Constrained-memory CPU validation; no GPU performance or language-quality claim.",
+    "measurement_source_commit": "8bb51d0626bb51bb8532014afa34bf2d34f246a3",
+    "metric_reporting_source_commit": "c844bbf5406225e07c8792ff883a45a827aa5d9e",
+    "full_weight_checksum_verified": true
+  },
+  "metric_reporting_correction": {
+    "reason": "Collector used N/predicted_ms; this backend reports N-1 decode intervals. Native counters are unchanged.",
+    "source": "Every displayed decode rate is now the original backend_timings.predicted_per_second value.",
+    "original_collector_file": "comparison.collector.json",
+    "original_collector_sha256": "3c717dbcfc5cd726fdc26048a6b9a657fa3ba6e3ea49684963761499567328bb",
+    "reporting_code_commit": "c844bbf5406225e07c8792ff883a45a827aa5d9e"
+  }
+}

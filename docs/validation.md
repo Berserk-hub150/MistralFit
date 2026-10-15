@@ -1,6 +1,6 @@
 # Validation — 2026-10-15
 
-Local environment: Linux x86_64, Python 3.12.14, no NVIDIA GPU detected, 8 GiB cgroup RAM limit. This environment cannot establish full Mistral Small 4 inference performance.
+Local environment: Linux x86_64, Python 3.12.14, Intel Xeon Platinum 8573C, no GPU detected, 8 GiB cgroup RAM limit and 8-core CPU quota. A complete Small 4 IQ1_S GGUF has generated tokens through the official llama.cpp b11662 CPU runtime. Because its weights exceed RAM, this setup measures a short, heavily memory-constrained CPU workload; it cannot establish representative GPU, resident-model or sustained-generation performance.
 
 | Check | Result |
 |---|---|
@@ -14,7 +14,8 @@ Local environment: Linux x86_64, Python 3.12.14, no NVIDIA GPU detected, 8 GiB c
 | Installed-artifact import | Wheel imported and `doctor --json` executed from outside the source directory. |
 | Windows PowerShell scripts | Syntax parsed on Windows CI. Interactive setup/publication is not exercised by automated tests. |
 | GitHub CI matrix | Linux, Windows and macOS with Python 3.10/3.13, plus a package build/install job. Live results: [GitHub Actions](https://github.com/Berserk-hub150/MistralFit/actions/workflows/test.yml). |
-| Real llama.cpp / Small 4 generation | Not run. Requires compatible runtime, model files and sufficient hardware. |
-| Speedup, quality, peak memory | No measured claims. |
+| Real llama.cpp / Small 4 generation | Complete 26,882,944,256-byte IQ1_S GGUF, independently verified full SHA-256; an initial 4-token probe and an 8-token, three-repetition comparison. [Raw data and exact setup](../benchmarks/2026-10-15-small4-iq1s-cpu/README.md). |
+| Native decode metric | A real-model run exposed an incorrect first-token interval assumption. Reporting now uses the backend's `predicted_per_second`; original collector files and correction checksums are preserved. |
+| GPU/expert-offload speedup, quality, peak memory | Not established or measured by this CPU experiment. |
 
-The only performance values used by tests belong to a deterministic HTTP contract fixture and are not model/hardware measurements. No such values are included as product benchmark results.
+Performance values in automated protocol tests belong to a deterministic HTTP fixture and are not model/hardware measurements. They are separate from the actual model runs published under `benchmarks/`.

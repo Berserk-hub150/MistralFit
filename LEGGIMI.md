@@ -1,6 +1,6 @@
 # MistralFit — avvio rapido
 
-Questo progetto cerca una configurazione di llama.cpp adatta al tuo modello Mistral confrontando prove reali. La prima versione contiene il programma, i test e la documentazione per GitHub. **Le prestazioni su Mistral Small 4 completo restano da misurare.**
+Questo progetto cerca una configurazione di llama.cpp adatta al tuo modello Mistral confrontando prove reali. Sono disponibili le [prime misure su Small 4 IQ1_S completo](benchmarks/2026-10-15-small4-iq1s-cpu/README.md), con dati grezzi, checksum e comandi per ripeterle. La prova usa solo CPU, 8 GB di RAM e generazioni molto brevi: verifica il funzionamento su questa macchina, senza dimostrare un'accelerazione o la qualità del modello. Le prestazioni su GPU restano da validare.
 
 ## 1. Provalo subito
 
@@ -59,4 +59,4 @@ La repository ufficiale del progetto è [Berserk-hub150/MistralFit](https://gith
 
 Lo script `scripts\Publish-GitHub.ps1` rimane disponibile per chi parte da uno ZIP e desidera creare una propria repository separata. Richiede il parametro esplicito `-Publish`; non va usato per aggiornare la repository esistente.
 
-Usa questa prima versione come progetto sperimentale e invito a contribuire. Prima di promuoverlo come soluzione più veloce, pubblica almeno un confronto reale e ripetibile con `upstream-auto` sulla stessa macchina. Nel file [piano di lancio](docs/launch-plan.md) trovi la sequenza consigliata.
+Usa questa prima versione come progetto sperimentale e invito a contribuire. Il confronto CPU pubblicato è preliminare. Per sostenerne una maggiore velocità servono prove più lunghe e ripetute su hardware adatto, un confronto con `upstream-auto` e verifiche separate degli output. Nel file [piano di lancio](docs/launch-plan.md) trovi la sequenza consigliata.

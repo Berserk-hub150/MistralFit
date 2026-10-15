@@ -1,0 +1,1 @@
+Write a Python function that merges sorted iterators lazily with a heap. Explain the complexity and give examples with empty inputs, duplicates, and three input streams.

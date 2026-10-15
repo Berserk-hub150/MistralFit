@@ -6,6 +6,8 @@ Make Mistral Small 4 setup easier to measure on a personal workstation. The firs
 
 MistralFit should earn attention through a reproducible improvement or a useful failure diagnosis. The current package supplies the experiment tooling; the performance result remains to be earned. There is no basis to promise DwarfStar's adoption or a number of stars.
 
+The [first real CPU measurements](../benchmarks/2026-10-15-small4-iq1s-cpu/README.md) are published with checksums and native timings. They also exposed and helped fix an overstated decode-rate calculation. Their short, paging-heavy workload validates integration; it does not yet supply the target-hardware performance advantage described below.
+
 ## Before the first broad announcement
 
 1. Put the experimental source on a fresh, clearly named repository. Preserve the MIT license, upstream acknowledgement and status note.

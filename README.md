@@ -7,13 +7,13 @@
   <img src="https://img.shields.io/badge/runtime_dependencies-0-e6a74d" alt="Zero Python runtime dependencies">
 </p>
 
-<p align="center"><a href="#quick-start">Quick start</a> · <a href="#measure-a-real-model">Run an experiment</a> · <a href="docs/benchmark-method.md">Methodology</a> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="LEGGIMI.md">Italiano</a></p>
+<p align="center"><a href="#quick-start">Quick start</a> · <a href="benchmarks/README.md">Real measurements</a> · <a href="#measure-a-real-model">Run an experiment</a> · <a href="docs/benchmark-method.md">Methodology</a> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="LEGGIMI.md">Italiano</a></p>
 
 **MistralFit measures which local Mistral configuration works best among the candidates tested on your machine.** Inspect a GGUF without loading its weights, compare CPU/GPU and MoE expert placement, then launch the measured winner.
 
 It uses **llama.cpp** for inference and targets **Mistral Small 4**. The search includes upstream automatic fitting, GPU layer offload, CPU-resident experts, mixed expert placement and optional expert caching. Every trial keeps the same context and generation budget.
 
-> **Experimental v0.1.** Parser, planner, process/HTTP integration and reporting have automated tests. Full Small 4 inference and performance still need hardware validation. No speedup is claimed. Independent community project; unaffiliated with Mistral AI.
+> **Experimental v0.1.1.** Real Small 4 IQ1_S generation has been measured on one constrained CPU setup: [raw data and reproduction commands](benchmarks/2026-10-15-small4-iq1s-cpu/README.md). GPU/expert-offload performance and output quality remain unvalidated. No acceleration is established. Independent community project; unaffiliated with Mistral AI.
 
 ## What you get
 
@@ -26,6 +26,17 @@ It uses **llama.cpp** for inference and targets **Mistral Small 4**. The search 
 | **Winner replay** | A local server launch after checking model and runtime identity. |
 
 Planning is offline and uses Python's standard library. Benchmarking additionally needs a compatible `llama-server` executable and local model weights.
+
+## First real measurements
+
+The [first Small 4 experiment](benchmarks/2026-10-15-small4-iq1s-cpu/README.md) runs the complete 25.04 GiB IQ1_S GGUF through llama.cpp b11662 in an 8 GiB CPU container. It includes an initial inference probe and a comparison of `upstream-auto` with `cpu-only`, with one warmup and three measured requests per candidate.
+
+| Candidate | Median decode tok/s | Median time to first token |
+|---|---:|---:|
+| `upstream-auto` | 0.1417 | 37.794 s |
+| `cpu-only` | 0.1040 | 48.406 s |
+
+This is an **8-token integration microbenchmark** with weights larger than RAM. Both profiles use the CPU; paging and cache state strongly affect the result. It establishes real generation on this setup, with no demonstrated placement advantage, sustained-throughput result or quality claim. The report preserves native timings and the original collector data, including a metric correction found during the run.
 
 ## Why another tool?
 

@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "mistralfit_version": "0.1.1",
+  "status": "complete",
+  "created_at": "2026-10-15T16:25:19.548923+00:00",
+  "settings": {
+    "context": 512,
+    "tokens": 4,
+    "repeats": 1,
+    "warmups": 0,
+    "threads": 8,
+    "seed": 42,
+    "temperature": 0,
+    "cache_prompt": false,
+    "ignore_eos": true,
+    "weight_repacking": false,
+    "prompt_sha256": "0ad584df7fe378089a036a5a334c0d46f0a531c2189f936beff1a3a88ecf070c",
+    "prompt_characters": 170,
+    "max_median_ttft_seconds": null,
+    "objective": "highest median decode tokens/s among successful candidates satisfying the TTFT constraint",
+    "completion_timeout_seconds": 300.0,
+    "startup_timeout_seconds": 600.0,
+    "decode_rate_source": "backend timings.predicted_per_second"
+  },
+  "plan": {
+    "schema_version": 1,
+    "model": {
+      "files": [
+        "mistralai_Mistral-Small-4-119B-2603-IQ1_S.gguf"
+      ],
+      "file_bytes": 26882944256,
+      "weight_bytes": 26875039744,
+      "architecture": "mistral4",
+      "name": "Mistral Small 4 119B 2603",
+      "blocks": 36,
+      "routed_expert_bytes": 24998051840,
+      "tensor_count": 579,
+      "header_fingerprint": "fc51106f00eb5b26e3781cbe7c71d5cab3db172d01d3fa9469f020e3899aab46",
+      "identity_note": "SHA-256 of structural headers and file sizes; NOT a full weights checksum."
+    },
+    "hardware": {
+      "system": "Linux",
+      "machine": "x86_64",
+      "cpu_count": 9,
+      "ram_total": 8589934592,
+      "ram_available": 5171990528,
+      "gpus": [],
+      "unified_memory": false,
+      "notes": [
+        "RAM constrained by the container cgroup; available budget includes estimated clean inactive file cache.",
+        "No NVIDIA GPU detected; AMD/Intel GPU budgets can be supplied manually."
+      ]
+    },
+    "context": 512,
+    "ram_budget_bytes": 5171990528,
+    "gpu_budget_bytes": 0,
+    "gpu_index": 0,
+    "kv_estimate_bytes": 21233664,
+    "notes": [
+      "Expanded f16 KV estimate; MLA/SWA backend allocation may differ.",
+      "Weights are measured from tensor spans, including padding; KV and scratch are estimates.",
+      "These are candidate configurations, not proof of compatibility, speed, or memory fit.",
+      "No quantization is changed. One context, prompt and generation budget are used across candidates."
+    ],
+    "profiles": [
+      {
+        "name": "upstream-auto",
+        "gpu_layers": null,
+        "cpu_moe_layers": 0,
+        "expert_cache_mib": 0,
+        "estimated_gpu_bytes": null,
+        "estimated_ram_bytes": 27411910656,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "name": "cpu-only",
+        "gpu_layers": 0,
+        "cpu_moe_layers": 0,
+        "expert_cache_mib": 0,
+        "estimated_gpu_bytes": 0,
+        "estimated_ram_bytes": 27433144320,
+        "eligible": true,
+        "reason": ""
+      }
+    ]
+  },
+  "runtime": {
+    "version": "version: 0.6.0-dev (build 11662, commit c0cb53ac4)\nbuilt with GNU 11.4.0 for Linux x86_64",
+    "capabilities": {
+      "--fit": true,
+      "--n-cpu-moe": true,
+      "--cpu-moe": true,
+      "--moe-cache-mib": true,
+      "--perf": true,
+      "--jinja": true,
+      "--no-repack": true
+    }
+  },
+  "full_model_sha256": null,
+  "results": [
+    {
+      "profile": {
+        "name": "cpu-only",
+        "gpu_layers": 0,
+        "cpu_moe_layers": 0,
+        "expert_cache_mib": 0,
+        "estimated_gpu_bytes": 0,
+        "estimated_ram_bytes": 27433144320,
+        "eligible": true,
+        "reason": ""
+      },
+      "status": "ok",
+      "samples": [
+        {
+          "ttft_seconds": 40.067738156000814,
+          "wall_seconds": 69.44600840600015,
+          "decode_tokens_per_second": 0.10212192336430465,
+          "generated_tokens": 4,
+          "prompt_tokens": 34,
+          "prompt_ms": 40055.721,
+          "decode_ms": 29376.65,
+          "output_sha256": "8a0de3cf7888da435d7c2f4d6d154f96ca199ce2a6af1eb11edc50e020c65a08",
+          "token_ids_sha256": "3c9cdf8a9e553f7b5ad4d9e82ad3fe23d842dcfdc6aa43fc9b31a384e282430b",
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 34,
+            "prompt_ms": 40055.721,
+            "prompt_per_token_ms": 1178.1094411764705,
+            "prompt_per_second": 0.8488175758963371,
+            "predicted_n": 4,
+            "predicted_ms": 29376.65,
+            "predicted_per_token_ms": 9792.216666666667,
+            "predicted_per_second": 0.10212192336430465
+          },
+          "collector_derived_rate_before_fix": 0.13616256448573952
+        }
+      ],
+      "effective_context": 512,
+      "tokenized_prompt_length": 34,
+      "metrics": {
+        "median_decode_tokens_per_second": 0.10212192336430465,
+        "median_ttft_seconds": 40.067738156000814,
+        "min_decode_tokens_per_second": 0.10212192336430465,
+        "max_decode_tokens_per_second": 0.10212192336430465,
+        "relative_mad": 0.0,
+        "sample_count": 1,
+        "repeat_output_consistent": true
+      }
+    }
+  ],
+  "winner": "cpu-only",
+  "limits": [
+    "No language-quality benchmark is performed.",
+    "Output hashes expose differences; matching hashes are not proof of model quality.",
+    "Memory numbers are estimates, not measured peak RSS or VRAM.",
+    "One process start per candidate; repeated requests are not independent thermal runs.",
+    "No model weights, prompts, generated text, API keys, or absolute model paths are included.",
+    "Short CPU microbenchmark under an 8 GiB container cap with weights larger than RAM; not representative GPU or resident-model performance.",
+    "CPU-only and upstream-auto both execute on CPU here. This run does not establish an expert-offload or GPU optimization advantage."
+  ],
+  "trial_order": [
+    "cpu-only"
+  ],
+  "finished_at": "2026-10-15T16:27:27.919328+00:00",
+  "provenance": {
+    "environment": "Linux container; not a dedicated workstation",
+    "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "visible_logical_cpus": 9,
+    "affinity_cpu_count": 9,
+    "cpu_quota_cores": 8.0,
+    "ram_limit_bytes": 8589934592,
+    "gpu": "none detected",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "python": "3.12.14",
+    "model": {
+      "repository": "bartowski/mistralai_Mistral-Small-4-119B-2603-GGUF",
+      "revision": "f569d04efea9546de10ec040819908fa4e8f1c92",
+      "file": "mistralai_Mistral-Small-4-119B-2603-IQ1_S.gguf",
+      "size": 26882944256,
+      "lfs": {
+        "sha256": "e6363fa561991421a01c665e18b573f3affdef8c1eb039e63da8fcfcb8f826d5",
+        "size": 26882944256,
+        "pointerSize": 136
+      }
+    },
+    "runtime_asset": {
+      "tag": "b11662",
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11662/llama-b11662-bin-ubuntu-x64.tar.gz",
+      "sha256": "08968dbfe8f6fb9b3e467ce6927fb854a22acbb4a637940b4fe8f711395292e5",
+      "size": 17839781
+    },
+    "scope": "Constrained-memory CPU validation; no GPU performance or language-quality claim.",
+    "measurement_source_commit": "8bb51d0626bb51bb8532014afa34bf2d34f246a3",
+    "metric_reporting_source_commit": "c844bbf5406225e07c8792ff883a45a827aa5d9e",
+    "full_weight_checksum_verified": true
+  },
+  "metric_reporting_correction": {
+    "reason": "Collector used N/predicted_ms; this backend reports N-1 decode intervals. Native counters are unchanged.",
+    "source": "Every displayed decode rate is now the original backend_timings.predicted_per_second value.",
+    "original_collector_file": "probe.collector.json",
+    "original_collector_sha256": "4cd201414fc6935fb470fc9f0160e89d11351bdfb225783be5fe369a3a707ba0",
+    "reporting_code_commit": "c844bbf5406225e07c8792ff883a45a827aa5d9e"
+  }
+}
