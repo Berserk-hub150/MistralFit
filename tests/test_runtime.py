@@ -61,6 +61,12 @@ class RuntimeTests(unittest.TestCase):
             with self.assertRaises(HTTPError):
                 json_request(local.base, "/props")
 
+    def test_random_credential_with_leading_dash_remains_an_argument(self):
+        with patch("mistralfit.runtime.secrets.token_urlsafe", return_value="-leading-dash"):
+            with fixture() as local:
+                response = json_request(local.base, "/props", api_key=local.api_key)
+                self.assertEqual(response["default_generation_settings"]["n_ctx"], 4096)
+
     def test_protocol_fixture_does_not_require_reverse_dns(self):
         probe = """import runpy, socket, sys
 def forbidden(*args, **kwargs):

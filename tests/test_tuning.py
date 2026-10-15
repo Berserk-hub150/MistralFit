@@ -56,6 +56,8 @@ class TuningTests(unittest.TestCase):
 
     def test_pipeline_with_real_subprocess_and_http_fixture(self):
         report, path = self.run_experiment()
+        self.assertTrue(all(r["status"] == "ok" for r in report["results"]),
+                        [(r["profile"]["name"], r.get("reason")) for r in report["results"]])
         self.assertEqual(report["status"], "complete", [(r["profile"]["name"], r.get("reason")) for r in report["results"]])
         self.assertIn(report["winner"], ("upstream-auto", "cpu-only"))
         self.assertEqual(report["speedup_vs_upstream_auto"], 1)

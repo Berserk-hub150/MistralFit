@@ -108,7 +108,9 @@ class Server:
         self.startup_timeout = startup_timeout
         self.process = None
         self.log = None
-        self.api_key = secrets.token_urlsafe(24)
+        # A random URL-safe token can begin with '-'; some command-line
+        # parsers would then interpret the credential as another option.
+        self.api_key = "mistralfit-" + secrets.token_urlsafe(24)
         self.base = ""
         self.argv = []
         self.last_health_error = "No health response received"
