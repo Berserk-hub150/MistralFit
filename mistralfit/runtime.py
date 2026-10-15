@@ -49,7 +49,10 @@ def runtime_info(server: str) -> dict:
     help_text = help_run.stdout + help_run.stderr
     if help_run.returncode != 0 or "--model" not in help_text:
         raise RuntimeError_("Executable did not provide llama-server's expected --help contract.")
+    clock = time.get_clock_info("perf_counter")
     return {"version": (version_run.stdout + version_run.stderr).strip()[:2000], "help": help_text,
+            "client_clock": {"name": "time.perf_counter", "implementation": clock.implementation,
+                             "resolution_seconds": clock.resolution, "monotonic": clock.monotonic},
             "capabilities": {flag: flag in help_text for flag in
                              ("--fit", "--n-cpu-moe", "--cpu-moe", "--moe-cache-mib", "--perf", "--jinja", "--no-repack")}}
 
@@ -127,7 +130,7 @@ class Server:
         self.last_health_error = "No health response received"
 
     def __enter__(self):
-        started = time.monotonic()
+        started = time.perf_counter()
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
@@ -139,8 +142,8 @@ class Server:
                                             env=clean_environment(), stdin=subprocess.DEVNULL)
             if self.on_spawn:
                 self.on_spawn(self.process.pid)
-            deadline = time.monotonic() + self.startup_timeout
-            while time.monotonic() < deadline:
+            deadline = time.perf_counter() + self.startup_timeout
+            while time.perf_counter() < deadline:
                 if self.process.poll() is not None:
                     raise RuntimeError_(f"llama-server exited during loading (code {self.process.returncode}). {self.log_tail()}")
                 try:
@@ -148,7 +151,7 @@ class Server:
                     if health.get("status") == "ok":
                         # Authenticated probe prevents adopting an unrelated server on a raced port.
                         json_request(self.base, "/props", timeout=2, api_key=self.api_key)
-                        self.startup_seconds = time.monotonic() - started
+                        self.startup_seconds = time.perf_counter() - started
                         return self
                     self.last_health_error = "Backend health status was " + repr(health.get("status"))
                 except (OSError, ValueError, urllib.error.URLError) as exc:
@@ -192,7 +195,7 @@ def completion_response(base: str, body: dict, *, timeout: float, api_key: str |
     # Literal loopback avoids DNS waits; no environment proxy can intercept a request.
     host = "::1" if url.hostname == "::1" else "127.0.0.1"
     connection = http.client.HTTPConnection(host, url.port or 80, timeout=timeout)
-    started = time.monotonic()
+    started = time.perf_counter()
     timer, response = None, None
     expired = threading.Event()
     try:
@@ -207,7 +210,7 @@ def completion_response(base: str, body: dict, *, timeout: float, api_key: str |
             except OSError:
                 pass
 
-        remaining = timeout - (time.monotonic() - started)
+        remaining = timeout - (time.perf_counter() - started)
         if remaining <= 0:
             raise TimeoutError("Completion exceeded the wall-clock deadline")
         timer = threading.Timer(remaining, abort)
@@ -221,10 +224,10 @@ def completion_response(base: str, body: dict, *, timeout: float, api_key: str |
         if response.status != 200:
             raise RuntimeError_(f"Backend completion returned HTTP {response.status}")
         yield response
-        if expired.is_set() or time.monotonic() - started >= timeout:
+        if expired.is_set() or time.perf_counter() - started >= timeout:
             raise TimeoutError("Completion exceeded the wall-clock deadline")
     except (OSError, http.client.HTTPException, RuntimeError_) as exc:
-        if expired.is_set() or time.monotonic() - started >= timeout:
+        if expired.is_set() or time.perf_counter() - started >= timeout:
             raise TimeoutError("Completion exceeded the wall-clock deadline") from exc
         if isinstance(exc, http.client.HTTPException):
             raise RuntimeError_("Backend HTTP protocol error: " + type(exc).__name__) from exc
@@ -242,12 +245,12 @@ def stream_completion(base: str, prompt: str, *, tokens: int, seed: int = 42,
                       timeout: float = 120, api_key: str | None = None) -> dict:
     body = {"prompt": prompt, "n_predict": tokens, "stream": True, "temperature": 0,
             "seed": seed, "cache_prompt": False, "ignore_eos": True, "return_tokens": True}
-    start, first, final = time.monotonic(), None, None
+    start, first, final = time.perf_counter(), None, None
     output, token_ids = [], []
     with completion_response(base, body, timeout=timeout, api_key=api_key) as response:
         event_lines = []
         for line in response:
-            if time.monotonic() - start > timeout:
+            if time.perf_counter() - start > timeout:
                 raise RuntimeError_("Completion exceeded the wall-clock deadline")
             decoded = line.decode("utf-8").rstrip("\r\n")
             if decoded.startswith("data:"):
@@ -265,7 +268,7 @@ def stream_completion(base: str, prompt: str, *, tokens: int, seed: int = 42,
                     raise RuntimeError_("Backend completion error: " + str(event["error"]))
                 piece, ids = event.get("content", ""), event.get("tokens", [])
                 if (piece or ids) and first is None:
-                    first = time.monotonic() - start
+                    first = time.perf_counter() - start
                 output.append(piece)
                 token_ids.extend(ids)
                 if event.get("stop"):
@@ -292,7 +295,7 @@ def stream_completion(base: str, prompt: str, *, tokens: int, seed: int = 42,
     if cached_n:
         raise RuntimeError_("Backend reused prompt tokens despite cache_prompt=false; trial excluded")
     text = "".join(output)
-    return {"ttft_seconds": first, "wall_seconds": time.monotonic() - start,
+    return {"ttft_seconds": first, "wall_seconds": time.perf_counter() - start,
             # Recent llama.cpp builds count N-1 decode intervals for N tokens.
             # Use the backend's own rate rather than overstating it with N/ms.
             "decode_tokens_per_second": float(rate),

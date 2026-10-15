@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 — 2026-10-15
+
+- Use the high-resolution `time.perf_counter` for client latency, wall time and runtime deadlines. Windows/Python 3.10 CI exposed zero-length short TTFT observations with the coarser monotonic clock.
+- Record the client clock implementation/resolution and add a coarse-clock regression test. Backend token timings and archived model results are unchanged.
+- Include a remote-only Kaggle inventory notebook and zero-budget preparation guide. Actual GPU availability and the full GPU study remain unverified.
+
 ## 0.2.0 — 2026-10-15
 
 - Add `study`: holdout workloads with 128/256-token budgets, separate calibration, three selected configurations, balanced process-start rounds and per-case native timing/hash results.

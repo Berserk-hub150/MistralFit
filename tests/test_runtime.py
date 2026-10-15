@@ -75,6 +75,14 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual(result["generated_tokens"], 4)
             self.assertLess(time.monotonic() - started, 0.4)
 
+    def test_short_requests_use_a_high_resolution_clock(self):
+        with fixture() as local:
+            # Older Windows runtimes can return the same monotonic tick for a short request.
+            with patch("mistralfit.runtime.time.monotonic", return_value=100.0):
+                result = stream_completion(local.base, "test", tokens=4, timeout=2, api_key=local.api_key)
+            self.assertGreater(result["ttft_seconds"], 0)
+            self.assertGreaterEqual(result["wall_seconds"], result["ttft_seconds"])
+
     def test_incomplete_or_incomparable_trials_are_rejected(self):
         for mode, message in [("missing-final", "before"), ("wrong-count", "expected"),
                               ("cached", "reused"), ("missing-timing", "expected"),

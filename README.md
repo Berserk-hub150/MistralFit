@@ -13,7 +13,7 @@
 
 It uses **llama.cpp** for inference and targets **Mistral Small 4**. The search includes upstream automatic fitting, GPU layer offload, CPU-resident experts, mixed expert placement and optional expert caching. Every trial keeps the same context and generation budget.
 
-> **Experimental v0.2.0.** Real Small 4 IQ1_S generation has been measured on one constrained CPU setup: [raw data and reproduction commands](benchmarks/2026-10-15-small4-iq1s-cpu/README.md). The new [controlled GPU study protocol](docs/controlled-study.md) is implemented; its real GPU run is pending. GPU/expert-offload performance and output quality remain unvalidated. No acceleration is established. Independent community project; unaffiliated with Mistral AI.
+> **Experimental v0.2.1.** Real Small 4 IQ1_S generation has been measured on one constrained CPU setup: [raw data and reproduction commands](benchmarks/2026-10-15-small4-iq1s-cpu/README.md). The new [controlled GPU study protocol](docs/controlled-study.md) is implemented; its real GPU run is pending. GPU/expert-offload performance and output quality remain unvalidated. No acceleration is established. Independent community project; unaffiliated with Mistral AI.
 
 ## What you get
 

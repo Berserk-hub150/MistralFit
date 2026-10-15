@@ -24,6 +24,7 @@ The lingering case completed with the same four fixture tokens and output hash b
 ## Reproduce and audit
 
 - [Raw timing observations](protocol-regression.json) include every sample and hashes of the baseline client, fixed client and fixture source.
+- The measured fixed-client source is preserved in [commit 63b4654](https://github.com/Berserk-hub150/MistralFit/commit/63b465431743cb65652ffe79b48755feb7a621d3). Later high-resolution clock changes do not rewrite these observations; a current-checkout rerun records its own source hash.
 - [Reproduction script](reproduce.py) loads the baseline runtime source from commit `52554f55b6e87755a6f91f5385b0393584a1d61e` and compares it with the current checkout. Run from a normal Git checkout containing that historical commit:
 
 ```bash
