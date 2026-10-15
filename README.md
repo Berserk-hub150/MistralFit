@@ -109,6 +109,7 @@ This sends a single tool-call request and validates its name and arguments. It e
 | `--tokens 256 --repeats 5` | Increase output length and measured repetitions. |
 | `--prompt-file workload.txt` | Use your workload; the report keeps its hash, not its text. |
 | `--allow-paging` | Explicitly try candidates exceeding the estimated host RAM budget; potentially very slow. |
+| `--no-repack` | Disable weight repacking for every candidate and retain that setting when replaying the winner. |
 | `--startup-timeout 600 --timeout 180` | Bound model loading and each completion. |
 
 NVIDIA discovery uses `nvidia-smi`; Windows RAM uses the OS API and Linux RAM respects common cgroup v2 limits. Apple Silicon memory is counted once. On macOS, supply `--ram-gib` from a measured available-memory budget; its RAM-pressure behavior is not inferred. Automatic GPU identity mapping across multiple devices/backends is not implemented. Multi-GPU search is outside this release.

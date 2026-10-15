@@ -61,15 +61,18 @@ def tune(plan: dict, model_path: str, server_path: str, output: Path, *,
          prompt: str = DEFAULT_PROMPT, tokens: int = 128, repeats: int = 3, warmups: int = 1,
          threads: int = 4, timeout: float = 120, startup_timeout: float = 300,
          max_ttft: float | None = None, names: list[str] | None = None,
-         notify=print, checksums: dict | None = None) -> dict:
+         notify=print, checksums: dict | None = None, repack: bool = True) -> dict:
     if repeats < 1 or warmups < 0 or tokens < 1 or threads < 1:
         raise ValueError("Invalid experiment settings")
     if tokens >= plan["context"]:
         raise ValueError("The generation budget must be smaller than the fixed context")
     info = runtime_info(server_path)
+    if not repack and "--no-repack" not in info["help"]:
+        raise RuntimeError_("Runtime lacks --no-repack requested by this experiment")
     settings = {"context": plan["context"], "tokens": tokens, "repeats": repeats, "warmups": warmups,
                 "threads": threads, "seed": 42, "temperature": 0, "cache_prompt": False,
-                "ignore_eos": True, "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+                "ignore_eos": True, "weight_repacking": repack,
+                "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
                 "prompt_characters": len(prompt), "max_median_ttft_seconds": max_ttft,
                 "objective": "highest median decode tokens/s among successful candidates satisfying the TTFT constraint",
                 "completion_timeout_seconds": timeout, "startup_timeout_seconds": startup_timeout}
@@ -107,7 +110,8 @@ def tune(plan: dict, model_path: str, server_path: str, output: Path, *,
 
             def builder(port, key):
                 return command(server_path, model_path, profile, context=plan["context"], threads=threads,
-                               port=port, gpu_index=plan["gpu_index"], help_text=info["help"], api_key=key)
+                               port=port, gpu_index=plan["gpu_index"], help_text=info["help"], api_key=key,
+                               repack=repack)
 
             try:
                 with Server(builder, startup_timeout=startup_timeout) as local:

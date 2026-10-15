@@ -105,6 +105,7 @@ def parser():
     tuning.add_argument("--profiles", help="comma-separated subset of generated profile names")
     tuning.add_argument("--prompt-file", type=Path, help="local workload; only its hash is saved in the report")
     tuning.add_argument("--sha256", action="store_true", help="hash full weights for stronger reproducibility")
+    tuning.add_argument("--no-repack", action="store_true", help="disable backend weight repacking in all candidates; useful for constrained RAM")
     reporting = sub.add_parser("report", help="render an experiment JSON as a standalone offline HTML report")
     reporting.add_argument("experiment", type=Path)
     reporting.add_argument("--out", type=Path, default=Path("results/report.html"))
@@ -145,7 +146,8 @@ def _serve(args):
         raise ValueError("Runtime lacks: " + ", ".join(missing))
     argv = command(server, model.paths[0], profile, context=report["settings"]["context"],
                    threads=report["settings"]["threads"], port=args.port,
-                   gpu_index=report["plan"]["gpu_index"], help_text=info["help"])
+                   gpu_index=report["plan"]["gpu_index"], help_text=info["help"],
+                   repack=report["settings"].get("weight_repacking", True))
     if args.dry_run:
         # JSON is an exact argv representation, not a shell command to re-evaluate.
         print(json.dumps({"argv": argv, "bind": "127.0.0.1"}, indent=2))
@@ -229,7 +231,8 @@ def main(argv=None):
                                   tokens=args.tokens, repeats=args.repeats, warmups=args.warmups, threads=args.threads,
                                   timeout=args.timeout, startup_timeout=args.startup_timeout, max_ttft=args.max_ttft,
                                   names=args.profiles.split(",") if args.profiles else None,
-                                  checksums=full_sha256(model.paths) if args.sha256 else None)
+                                  checksums=full_sha256(model.paths) if args.sha256 else None,
+                                  repack=not args.no_repack)
                 html_path = args.out.with_suffix(".html")
                 html_path.write_text(render(experiment), encoding="utf-8")
                 print("Winner:", experiment["winner"] or "none")

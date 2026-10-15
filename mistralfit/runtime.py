@@ -47,7 +47,7 @@ def runtime_info(server: str) -> dict:
         raise RuntimeError_("Executable did not provide llama-server's expected --help contract.")
     return {"version": (version_run.stdout + version_run.stderr).strip()[:2000], "help": help_text,
             "capabilities": {flag: flag in help_text for flag in
-                             ("--fit", "--n-cpu-moe", "--cpu-moe", "--moe-cache-mib", "--perf", "--jinja")}}
+                             ("--fit", "--n-cpu-moe", "--cpu-moe", "--moe-cache-mib", "--perf", "--jinja", "--no-repack")}}
 
 
 def unsupported(profile: Profile, help_text: str) -> list[str]:
@@ -60,7 +60,8 @@ def unsupported(profile: Profile, help_text: str) -> list[str]:
 
 
 def command(server: str, model: str, profile: Profile, *, context: int, threads: int,
-            port: int, gpu_index: int = 0, help_text: str = "", api_key: str | None = None) -> list[str]:
+            port: int, gpu_index: int = 0, help_text: str = "", api_key: str | None = None,
+            repack: bool = True) -> list[str]:
     args = [server, "--model", model, "--ctx-size", str(context), "--threads", str(threads),
             "--parallel", "1", "--host", "127.0.0.1", "--port", str(port),
             "--batch-size", "512", "--ubatch-size", "128", "--cache-type-k", "f16", "--cache-type-v", "f16",
@@ -75,6 +76,10 @@ def command(server: str, model: str, profile: Profile, *, context: int, threads:
         args.extend(["--n-cpu-moe", str(profile.cpu_moe_layers)])
     if profile.expert_cache_mib:
         args.extend(["--moe-cache-mib", str(profile.expert_cache_mib)])
+    if not repack:
+        if "--no-repack" not in help_text:
+            raise RuntimeError_("Runtime lacks --no-repack requested by this experiment")
+        args.append("--no-repack")
     for flag in ("--perf", "--jinja"):
         if flag in help_text:
             args.append(flag)

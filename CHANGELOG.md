@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 — 2026-10-15
+
+- Add an explicit `--no-repack` experiment control, validate backend support, record it and preserve it when launching the measured winner.
+- Prepare constrained-memory real-model validation without changing quantization between candidates.
+
 ## 0.1.0 — 2026-10-15
 
 Initial experimental source release.

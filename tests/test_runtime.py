@@ -32,6 +32,16 @@ class RuntimeTests(unittest.TestCase):
         profile = Profile("cache", 99, 36, 4096)
         self.assertEqual(unsupported(profile, "--fit --n-cpu-moe"), ["--moe-cache-mib"])
 
+    def test_explicit_no_repack_is_passed_to_backend(self):
+        argv = command("server", "model.gguf", Profile("cpu", 0), context=1024, threads=4,
+                       port=8000, help_text="--fit --no-repack", repack=False)
+        self.assertIn("--no-repack", argv)
+
+    def test_missing_no_repack_capability_is_reported(self):
+        with self.assertRaisesRegex(RuntimeError_, "lacks --no-repack"):
+            command("server", "model.gguf", Profile("cpu", 0), context=1024, threads=4,
+                    port=8000, help_text="--fit", repack=False)
+
     def test_environment_does_not_override_experiment(self):
         with patch.dict(os.environ, {"LLAMA_ARG_CTX_SIZE": "8", "MISTRALFIT_TEST": "keep"}):
             env = clean_environment()

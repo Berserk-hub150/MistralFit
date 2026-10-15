@@ -4,7 +4,7 @@ Local environment: Linux x86_64, Python 3.12.14, no NVIDIA GPU detected, 8 GiB c
 
 | Check | Result |
 |---|---|
-| `python -m unittest discover -v` | 38 tests, including reverse-DNS-independent loopback and leading-dash credential regressions. See CI for each platform's current result. |
+| `python -m unittest discover -v` | 40 tests, including reverse-DNS-independent loopback, leading-dash credentials and explicit repacking controls. See CI for each platform's current result. |
 | GGUF single/split inspection | Synthetic structural fixtures passed, including missing/mixed shards and malformed/truncated data. |
 | CPU/GPU/unified-memory planning | Candidate and budget tests passed on synthetic layouts. |
 | HTTP/SSE and process supervision | Real local subprocess and HTTP fixtures passed; these do not run inference. |

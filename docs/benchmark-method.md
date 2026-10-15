@@ -8,6 +8,8 @@ Every candidate starts a fresh local server process. After the server is healthy
 
 Default run: one warmup request and three measured requests, 128 generated tokens, a 4096-token context, f16 KV data types, temperature zero and seed 42. The token budget ignores EOS. This is a throughput workload rather than representative free-form conversational behavior. Use a longer output and representative local workload for a stronger experiment.
 
+Weight repacking is left at its backend default unless `--no-repack` is requested. The setting is recorded and applied to every candidate and to winner replay. A constrained-memory run that disables repacking is a different setup from an ordinary resident-memory run and must be identified as such.
+
 ## Baseline
 
 `upstream-auto` uses llama.cpp's own automatic fitting, with the same explicitly requested context, batch sizes, KV types, threads, prompt and token budget as the other profiles. It receives no invented penalty or handicap. If it is the fastest passing candidate, it wins.

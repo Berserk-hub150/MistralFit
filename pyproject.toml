@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mistralfit"
-version = "0.1.0"
+version = "0.1.1"
 description = "Measure and compare local Mistral memory-placement strategies with llama.cpp."
 readme = "README.md"
 requires-python = ">=3.10"
