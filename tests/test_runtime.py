@@ -12,7 +12,7 @@ from mistralfit.runtime import RuntimeError_, Server, clean_environment, command
 FIXTURE = str(Path(__file__).with_name("fake_server.py"))
 
 
-def fixture(mode="ok", timeout=5):
+def fixture(mode="ok", timeout=10):
     return Server(lambda port, key: [sys.executable, FIXTURE, "--port", str(port), "--api-key", key,
                                     "--fixture-mode", mode], startup_timeout=timeout)
 
@@ -61,6 +61,19 @@ class RuntimeTests(unittest.TestCase):
             with self.assertRaises(HTTPError):
                 json_request(local.base, "/props")
 
+    def test_protocol_fixture_does_not_require_reverse_dns(self):
+        probe = """import runpy, socket, sys
+def forbidden(*args, **kwargs):
+    raise AssertionError('Reverse DNS is forbidden in this regression test')
+socket.getfqdn = forbidden
+runpy.run_path(sys.argv[1], run_name='__main__')
+"""
+        local = Server(lambda port, key: [sys.executable, "-c", probe, FIXTURE,
+                                         "--port", str(port), "--api-key", key], startup_timeout=10)
+        with local:
+            result = stream_completion(local.base, "test", tokens=4, api_key=local.api_key)
+            self.assertEqual(result["generated_tokens"], 4)
+
     def test_startup_crash_is_reaped(self):
         local = Server(lambda *_: [sys.executable, "-c", "raise SystemExit(7)"], startup_timeout=5)
         with self.assertRaisesRegex(RuntimeError_, "exited"):
@@ -70,7 +83,7 @@ class RuntimeTests(unittest.TestCase):
 
     def test_startup_timeout_terminates_child(self):
         local = Server(lambda *_: [sys.executable, "-c", "import time; time.sleep(20)"], startup_timeout=0.05)
-        with self.assertRaisesRegex(RuntimeError_, "timed out"):
+        with self.assertRaisesRegex(RuntimeError_, "timed out.*last health check"):
             with local:
                 pass
         self.assertIsNotNone(local.process.poll())

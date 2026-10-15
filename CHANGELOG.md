@@ -11,5 +11,6 @@ Initial experimental source release.
 - Preserve individual trials, failures, exclusions, model identity and settings in JSON and offline HTML.
 - Replay the selected configuration and offer a local API tool-call smoke check.
 - Include Windows entry scripts, a dependency-free automated test suite and package/CI workflows.
+- Include startup health diagnostics and a loopback protocol fixture that avoids reverse-DNS dependencies.
 
 Full Mistral Small 4 inference and performance await real hardware validation. This release contains no measured speedup or model-quality claim.

@@ -111,6 +111,7 @@ class Server:
         self.api_key = secrets.token_urlsafe(24)
         self.base = ""
         self.argv = []
+        self.last_health_error = "No health response received"
 
     def __enter__(self):
         with socket.socket() as sock:
@@ -132,10 +133,11 @@ class Server:
                         # Authenticated probe prevents adopting an unrelated server on a raced port.
                         json_request(self.base, "/props", timeout=2, api_key=self.api_key)
                         return self
-                except (OSError, ValueError, urllib.error.URLError):
-                    pass
+                    self.last_health_error = "Backend health status was " + repr(health.get("status"))
+                except (OSError, ValueError, urllib.error.URLError) as exc:
+                    self.last_health_error = type(exc).__name__ + ": " + str(exc)
                 time.sleep(0.1)
-            raise RuntimeError_(f"Model loading timed out after {self.startup_timeout:g}s. {self.log_tail()}")
+            raise RuntimeError_(f"Model loading timed out after {self.startup_timeout:g}s; last health check: {self.last_health_error}\n{self.log_tail()}")
         except BaseException:
             self.__exit__(None, None, None)
             raise

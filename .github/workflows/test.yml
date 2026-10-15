@@ -17,8 +17,8 @@ jobs:
         python: ['3.10', '3.13']
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version: ${{ matrix.python }}
       - run: python -m compileall -q mistralfit
@@ -37,8 +37,8 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.13'
       - run: python -m pip install build
@@ -51,7 +51,7 @@ jobs:
           cd /tmp
           /tmp/mistralfit-wheel-check/bin/mistralfit --version
           /tmp/mistralfit-wheel-check/bin/mistralfit doctor --json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: python-distributions
           path: dist/*

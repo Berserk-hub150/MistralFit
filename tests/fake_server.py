@@ -3,6 +3,7 @@ import argparse
 import json
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from socketserver import TCPServer
 
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument("--port", type=int, required=True)
@@ -75,4 +76,15 @@ class Handler(BaseHTTPRequestHandler):
             pass
 
 
-ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
+class FixtureHTTPServer(ThreadingHTTPServer):
+    def server_bind(self):
+        # HTTPServer normally reverse-resolves its hostname here. A local
+        # protocol fixture must not wait for CI DNS or macOS mDNS services.
+        TCPServer.server_bind(self)
+        self.server_name = "localhost"
+        self.server_port = self.server_address[1]
+
+
+server = FixtureHTTPServer(("127.0.0.1", args.port), Handler)
+print("Protocol fixture listening on loopback; no model inference", flush=True)
+server.serve_forever()
