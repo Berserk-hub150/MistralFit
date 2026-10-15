@@ -51,6 +51,8 @@ Apri `http://127.0.0.1:8000`. Le API locali sono disponibili su `http://127.0.0.
 
 Per il confronto più esteso è disponibile il comando `study`: tre prompt, generazioni da 128/256 token, riavvii ripetuti, confronto con un autotuner esterno e campioni di memoria. La [guida per la prova su workstation](docs/controlled-study.md) contiene i comandi Windows. Il protocollo è implementato e verificato con test HTTP; la prova GPU reale resta da eseguire su una macchina adatta.
 
+Per restare a **costo zero senza usare il PC personale per i calcoli**, è pronto un [notebook di controllo su Kaggle](docs/free-gpu.md). Verifica la sessione gratuita prima di scaricare i pesi; la disponibilità della GPU dipende dall'account. Non esegue ancora il benchmark.
+
 Esegui prima i test:
 
 ```powershell

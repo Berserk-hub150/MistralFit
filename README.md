@@ -119,6 +119,8 @@ python -m mistralfit study /models/small4.gguf --server /opt/llama/llama-server 
 
 The [workstation guide](docs/controlled-study.md) includes a pinned-reference pipeline script and Windows instructions. It requires appropriate local hardware. Different search budgets/workloads mean this evaluates selected configurations, not the superiority of a tuning algorithm. The GPU protocol has not yet been executed on Small 4.
 
+**Zero budget and no local GPU work?** Start with the [free Kaggle inventory notebook](docs/free-gpu.md). It checks a remote session before downloading weights; GPU availability and quota depend on the account. This preparation does not execute the benchmark.
+
 ## Search controls for tune
 
 | Option | Meaning |
